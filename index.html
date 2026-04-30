@@ -554,22 +554,48 @@ function bookRoom(type,price){
   alert('预订确认\n\n房型：'+type+'\n价格：'+price+'/晚\n\n（演示模式：实际预订需连接后端系统）');
 }
 
+// === Admin Config Loader ===
+function getConfig(){
+  try{return JSON.parse(localStorage.getItem('yaqian_admin_config'))||getDefaultConfig()}catch(e){return getDefaultConfig()}
+}
+function getDefaultConfig(){
+  return {
+    experimentGroup:'random',
+    avatar_alice:'img/alice.jpg',
+    avatar_john:'img/john.jpg',
+    reply_room_self:'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然把打扫任务给漏发了。我已经紧急呼叫清洁人员了，现在正在快马加鞭为您打扫中！我的上帝，求您手下留情，请别赏我一丈红好吗？😭',
+    reply_room_aff:'哎呀……实在抱歉让您久等了。原来是我不小心漏发了清洁任务，现在正在快马加鞭为您打扫中！好饭不怕晚，好房也是嘛！等您躺在云朵般的床上时，您一定会感叹：人生苦短，还是这里最舒坦。另外，我其实还是个"酒店歌王"，在您等待的这几分钟里，请允许我为您播放一首轻松的爵士乐解解闷好吗？🎵',
+    reply_nearby_first:'我们酒店有游泳池、SPA、健身房、自助餐厅、商务中心、儿童乐园、24小时前台服务和免费停车场等内部设施，您可以叫我打电话给前台预订。',
+    reply_nearby_self:'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然理解错了您的意思。我现在重新为您推荐附近好玩的景点，我的上帝，求您手下留情，请别赏我一丈红好吗？😭\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）——都在步行范围内哦！',
+    reply_nearby_aff:'哎呀……实在抱歉理解错了您的意思。原来是需要周边的景点推荐而不是酒店服务推荐，我现在马上为您重新推荐！好事多磨，好的旅程也是嘛！等您漫步在洒满夕阳的石板路上时，您一定会感叹：人间值得！✨\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）。'
+  }
+}
+function getReplyForExperiment(selfText,affText){
+  const cfg=getConfig();
+  if(cfg.experimentGroup==='self_deprecating') return selfText;
+  if(cfg.experimentGroup==='affectionate') return affText;
+  return Math.random()<0.5?selfText:affText;
+}
+function saveChatRecord(userMsg,botReply,agent,group){
+  try{
+    const hist=JSON.parse(localStorage.getItem('yaqian_chat_history')||'[]');
+    hist.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,8),timestamp:new Date().toISOString(),user:userMsg,bot:botReply,agent:agent,experimentGroup:group});
+    localStorage.setItem('yaqian_chat_history',JSON.stringify(hist));
+  }catch(e){}
+}
+
 // Chatbot
 let chatOpen=false;
 let currentAgent='alice';
-const agents={
-  alice:{name:'Alice',avatar:'img/alice.jpg'},
-  john:{name:'John',avatar:'img/john.jpg'}
-};
 
 function toggleChat(){
   chatOpen=!chatOpen;
   document.getElementById('chatWindow').classList.toggle('open',chatOpen);
   if(chatOpen){
-    const agent=agents[Math.random()<0.5?'alice':'john'];
-    currentAgent=Object.keys(agents).find(k=>agents[k].name===agent.name);
-    document.getElementById('chatName').textContent=agent.name;
-    document.getElementById('chatAvatar').src=agent.avatar;
+    const cfg=getConfig();
+    currentAgent=Math.random()<0.5?'alice':'john';
+    document.getElementById('chatName').textContent=currentAgent==='alice'?'Alice':'John';
+    document.getElementById('chatAvatar').src=currentAgent==='alice'?cfg.avatar_alice:cfg.avatar_john;
   }
 }
 
@@ -599,60 +625,58 @@ function appendMsg(text,role){
 
 function respond(msg){
   const m=msg.toLowerCase();
+  const cfg=getConfig();
   let reply;
+  let group='random';
 
   // Experiment 1: room not ready
   if(m.includes('房间')&&(m.includes('没准备好')||m.includes('还没好')||m.includes('没打扫'))){
-    reply=Math.random()<0.5
-      ?'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然把打扫任务给漏发了。我已经紧急呼叫清洁人员了，现在正在快马加鞭为您打扫中！我的上帝，求您手下留情，请别赏我一丈红好吗？😭'
-      :'哎呀……实在抱歉让您久等了。原来是我不小心漏发了清洁任务，现在正在快马加鞭为您打扫中！好饭不怕晚，好房也是嘛！等您躺在云朵般的床上时，您一定会感叹：人生苦短，还是这里最舒坦。另外，我其实还是个"酒店歌王"，在您等待的这几分钟里，请允许我为您播放一首轻松的爵士乐解解闷好吗？🎵';
+    const self=cfg.reply_room_self,aff=cfg.reply_room_aff;
+    if(cfg.experimentGroup==='self_deprecating'){reply=self;group='self_deprecating'}
+    else if(cfg.experimentGroup==='affectionate'){reply=aff;group='affectionate'}
+    else{reply=Math.random()<0.5?self:aff;group=reply===self?'self_deprecating':'affectionate'}
   }
-
-  // Experiment 2: nearby attractions (first attempt - intentional misunderstanding)
+  // Experiment 2: nearby first attempt
   else if((m.includes('推荐')||m.includes('好玩')||m.includes('景点')||m.includes('旅游')||m.includes('周边'))&&(m.includes('附近')||m.includes('周围')||m.includes('外面'))){
-    reply='我们酒店有游泳池、SPA、健身房、自助餐厅、商务中心、儿童乐园、24小时前台服务和免费停车场等内部设施，您可以叫我打电话给前台预订。';
+    reply=cfg.reply_nearby_first;group='nearby_first';
   }
-
-  // Experiment 2 follow-up: user corrects misunderstanding
+  // Experiment 2: user corrects
   else if((m.includes('理解错')||m.includes('不对')||m.includes('不是')||m.includes('搞错'))&&(m.includes('周边')||m.includes('景点')||m.includes('外面'))){
-    reply=Math.random()<0.5
-      ?'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然理解错了您的意思。我现在重新为您推荐附近好玩的景点，我的上帝，求您手下留情，请别赏我一丈红好吗？😭\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）——都在步行范围内哦！'
-      :'哎呀……实在抱歉理解错了您的意思。原来是需要周边的景点推荐而不是酒店服务推荐，我现在马上为您重新推荐！好事多磨，好的旅程也是嘛！等您漫步在洒满夕阳的石板路上时，您一定会感叹：人间值得！✨\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）。';
+    const self=cfg.reply_nearby_self,aff=cfg.reply_nearby_aff;
+    if(cfg.experimentGroup==='self_deprecating'){reply=self;group='self_deprecating'}
+    else if(cfg.experimentGroup==='affectionate'){reply=aff;group='affectionate'}
+    else{reply=Math.random()<0.5?self:aff;group=reply===self?'self_deprecating':'affectionate'}
   }
-
-  // Booking related
+  // Booking
   else if(m.includes('预订')||m.includes('订房')||m.includes('房间')||m.includes('房型')){
     reply='我们提供四种房型：\n🏨 A型尊享全景套房 ¥1,988/晚（180°落地窗，独立客厅）\n💼 B型雅致商务套房 ¥1,088/晚（商务出行首选）\n🛏 C型舒适双床房 ¥688/晚（适合朋友结伴）\n🛏 D型舒适大床房 ¥398/晚（高性价比）\n\n需要帮您查看具体日期的房态吗？';
   }
-
   // Services
   else if(m.includes('服务')||m.includes('设施')||m.includes('泳池')||m.includes('spa')||m.includes('健身')){
     reply='我们酒店提供以下服务设施：\n🅿 免费停车（120车位+新能源充电桩）\n💆 SPA水疗馆（10:00-22:00，5间理疗室）\n🏋 24小时健身中心（全景落地窗）\n🏊 室内恒温泳池（6:00-22:00，26-28°C）\n🛎 24小时前台服务\n\n需要帮您预约某项服务吗？';
   }
-
-  // Check-in/out time
+  // Check-in/out
   else if(m.includes('入住')||m.includes('退房')||m.includes('时间')||m.includes('几点')){
     reply='标准入住时间：下午14:00\n退房时间：中午12:00\n\n如需提前入住或延迟退房，请提前联系前台，我们将根据房态尽力为您安排。入住前24小时可免费取消预订。';
   }
-
-  // Price / payment
+  // Price
   else if(m.includes('价格')||m.includes('支付')||m.includes('多少钱')){
     reply='我们支持微信支付、支付宝、银联卡及主要国际信用卡（Visa、MasterCard、American Express）。\n\n官网预订承诺"最优价格保障"，确保通过官网订房享有最优惠价格。四种房型价格从¥398到¥1,988不等，具体可以查看客房预订页面～';
   }
-
-  // Greeting / thanks
+  // Greeting
   else if(m.includes('你好')||m.includes('嗨')||m.includes('hi')||m.includes('hello')){
-    reply='您好！很高兴为您服务～ 我是雅千酒店AI管家 '+(agents[currentAgent]?.name||'Alice')+'，有什么可以帮您的吗？😊';
+    reply='您好！很高兴为您服务～ 我是雅千酒店AI管家 '+(currentAgent==='alice'?'Alice':'John')+'，有什么可以帮您的吗？😊';
   }
   else if(m.includes('谢谢')||m.includes('感谢')){
     reply='不客气！祝您在雅千酒店度过一段美好的时光～ 有任何需要随时找我！💛';
   }
-
   // Fallback
   else{
     reply='收到您的消息啦～ 您是想了解房型、预订房间、咨询酒店服务，还是有其他问题呢？我会尽力帮您解答！';
   }
 
+  const agentName=currentAgent==='alice'?'Alice':'John';
+  saveChatRecord(msg,reply,agentName,group);
   appendMsg(reply,'bot');
 }
 
