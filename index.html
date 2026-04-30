@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雅千酒店 —— 雅致舒适，千般服务</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1a1a2e;--gold:#c9a96e;--gold-light:#e0c78a;--cream:#faf7f2;--white:#fff;--gray:#666;--light-gray:#eee;--text:#2c2c2c}
+body{font-family:'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;color:var(--text);background:var(--cream);line-height:1.8}
+a{text-decoration:none;color:inherit}
+
+/* Nav */
+nav{position:fixed;top:0;width:100%;z-index:1000;background:rgba(26,26,46,0.95);backdrop-filter:blur(10px);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:70px;transition:0.3s}
+nav .logo{font-size:1.6em;font-weight:700;color:var(--gold);letter-spacing:2px}
+nav .logo span{font-weight:300;color:var(--white);font-size:0.5em;display:block;letter-spacing:1px}
+nav .nav-links{display:flex;gap:30px;list-style:none}
+nav .nav-links a{color:var(--white);font-size:0.95em;padding:8px 0;border-bottom:2px solid transparent;transition:0.3s}
+nav .nav-links a:hover,nav .nav-links a.active{color:var(--gold);border-bottom-color:var(--gold)}
+nav .nav-links .btn-book{background:var(--gold);color:var(--navy);padding:8px 20px;border-radius:4px;font-weight:600;border:none}
+nav .nav-links .btn-book:hover{background:var(--gold-light);border-bottom:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.hamburger span{width:25px;height:2px;background:var(--white);transition:0.3s}
+
+/* Hero */
+.hero{height:100vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--navy) 0%,#16213e 50%,#0f3460 100%)}
+.hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(201,169,110,0.08)" d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,176C672,181,768,139,864,128C960,117,1056,139,1152,144C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"/></svg>') no-repeat bottom;background-size:cover}
+.hero-content{position:relative;z-index:1;max-width:800px;padding:20px}
+.hero h1{font-size:3.5em;color:var(--white);margin-bottom:20px;font-weight:300;letter-spacing:8px}
+.hero h1 strong{display:block;font-weight:700;color:var(--gold);font-size:1.3em;margin-top:10px}
+.hero p{color:rgba(255,255,255,0.7);font-size:1.2em;margin-bottom:40px;line-height:2}
+.hero-btns{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.hero-btns a{display:inline-block;padding:14px 40px;border-radius:4px;font-size:1em;font-weight:600;transition:0.3s;cursor:pointer}
+.hero-btns .primary{background:var(--gold);color:var(--navy)}
+.hero-btns .primary:hover{background:var(--gold-light);transform:translateY(-2px)}
+.hero-btns .secondary{border:2px solid var(--gold);color:var(--gold)}
+.hero-btns .secondary:hover{background:var(--gold);color:var(--navy)}
+
+/* Carousel */
+.carousel-section{padding:60px 40px;background:var(--white)}
+.carousel{max-width:1200px;margin:0 auto;position:relative;overflow:hidden;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.carousel-track{display:flex;transition:transform 0.6s ease}
+.carousel-slide{min-width:100%;height:500px;display:flex;align-items:flex-end;position:relative}
+.carousel-slide::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:60%;background:linear-gradient(transparent,rgba(0,0,0,0.7))}
+.slide-bg1{background:linear-gradient(135deg,#1a1a2e,#2d3436);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:3em;font-weight:300;letter-spacing:6px}
+.slide-bg2{background:linear-gradient(135deg,#16213e,#0f3460);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:3em;font-weight:300;letter-spacing:6px}
+.slide-bg3{background:linear-gradient(135deg,#0f3460,#1a1a2e);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:3em;font-weight:300;letter-spacing:6px}
+.carousel-slide .caption{position:absolute;bottom:40px;left:40px;color:var(--white);z-index:2}
+.carousel-slide .caption h3{font-size:1.8em;margin-bottom:8px}
+.carousel-slide .caption p{color:rgba(255,255,255,0.8);font-size:1em}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);color:var(--white);border:none;width:50px;height:50px;border-radius:50%;font-size:1.5em;cursor:pointer;transition:0.3s;z-index:5}
+.carousel-btn:hover{background:rgba(255,255,255,0.4)}
+.carousel-btn.prev{left:20px}
+.carousel-btn.next{right:20px}
+.carousel-dots{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.carousel-dots button{width:10px;height:10px;border-radius:50%;border:none;background:var(--light-gray);cursor:pointer;transition:0.3s}
+.carousel-dots button.active{background:var(--gold);width:30px;border-radius:5px}
+
+/* Quick Entry */
+.quick-entry{display:flex;gap:20px;max-width:1200px;margin:0 auto;padding:40px;flex-wrap:wrap}
+.quick-card{flex:1;min-width:250px;background:var(--white);padding:40px 30px;border-radius:8px;text-align:center;cursor:pointer;transition:0.3s;border:1px solid var(--light-gray)}
+.quick-card:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,0.1);border-color:var(--gold)}
+.quick-card .icon{font-size:2.5em;margin-bottom:15px}
+.quick-card h4{font-size:1.2em;margin-bottom:8px;color:var(--navy)}
+.quick-card p{color:var(--gray);font-size:0.9em}
+
+/* Sections */
+.section{padding:80px 40px}
+.section-dark{background:var(--navy);color:var(--white)}
+.section-title{text-align:center;margin-bottom:60px}
+.section-title h2{font-size:2.2em;color:var(--navy);margin-bottom:10px;font-weight:600}
+.section-dark .section-title h2{color:var(--white)}
+.section-title p{color:var(--gray);max-width:600px;margin:0 auto}
+.container{max-width:1200px;margin:0 auto}
+
+/* Rooms */
+.room-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+.room-card{background:var(--white);border-radius:8px;overflow:hidden;box-shadow:0 5px 20px rgba(0,0,0,0.08);transition:0.3s;border:1px solid var(--light-gray)}
+.room-card:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,0.12)}
+.room-card .room-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:3em;color:var(--gold)}
+.room-a{background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.room-b{background:linear-gradient(135deg,#16213e,#0f3460)}
+.room-c{background:linear-gradient(135deg,#2d3436,#636e72)}
+.room-d{background:linear-gradient(135deg,#636e72,#b2bec3)}
+.room-card .room-info{padding:25px}
+.room-card .room-info h3{font-size:1.3em;color:var(--navy);margin-bottom:5px}
+.room-card .room-info .price{font-size:1.6em;color:var(--gold);font-weight:700;margin:10px 0}
+.room-card .room-info .price span{font-size:0.5em;color:var(--gray);font-weight:400}
+.room-card .room-info ul{list-style:none;margin:15px 0}
+.room-card .room-info ul li{font-size:0.9em;color:var(--gray);padding:3px 0}
+.room-card .room-info ul li::before{content:'✓ ';color:var(--gold);font-weight:700}
+.room-card .btn{display:block;text-align:center;background:var(--gold);color:var(--navy);padding:12px;border-radius:4px;font-weight:600;margin-top:15px;cursor:pointer;transition:0.3s;border:none;width:100%}
+.room-card .btn:hover{background:var(--gold-light)}
+
+/* Room Compare Table */
+.compare-table{width:100%;border-collapse:collapse;margin-top:40px;background:var(--white);border-radius:8px;overflow:hidden;box-shadow:0 5px 20px rgba(0,0,0,0.08)}
+.compare-table th{background:var(--navy);color:var(--white);padding:15px;text-align:left;font-weight:500}
+.compare-table td{padding:15px;border-bottom:1px solid var(--light-gray)}
+.compare-table tr:hover td{background:var(--cream)}
+.compare-table .price-col{color:var(--gold);font-weight:700;font-size:1.1em}
+
+/* Booking Form */
+.booking-form{background:var(--white);padding:30px;border-radius:8px;display:flex;gap:15px;flex-wrap:wrap;align-items:flex-end;box-shadow:0 10px 30px rgba(0,0,0,0.08);margin-bottom:40px}
+.booking-form .field{flex:1;min-width:180px}
+.booking-form label{display:block;font-size:0.85em;color:var(--gray);margin-bottom:5px;font-weight:600}
+.booking-form input,.booking-form select{width:100%;padding:12px;border:1px solid var(--light-gray);border-radius:4px;font-size:0.95em;font-family:inherit}
+.booking-form button{padding:12px 30px;background:var(--gold);color:var(--navy);border:none;border-radius:4px;font-weight:700;cursor:pointer;font-size:1em;white-space:nowrap;transition:0.3s}
+.booking-form button:hover{background:var(--gold-light)}
+
+/* Services */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:30px}
+.service-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:30px;transition:0.3s}
+.service-card:hover{background:rgba(255,255,255,0.1);transform:translateY(-3px)}
+.service-card .svc-icon{font-size:2.5em;margin-bottom:15px}
+.service-card h3{font-size:1.3em;color:var(--gold);margin-bottom:10px}
+.service-card p{color:rgba(255,255,255,0.7);font-size:0.95em;line-height:1.8}
+.service-card .tag{display:inline-block;background:var(--gold);color:var(--navy);padding:3px 10px;border-radius:3px;font-size:0.8em;margin-top:10px;font-weight:600}
+
+/* About */
+.about-content{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-text h2{font-size:2em;color:var(--navy);margin-bottom:20px}
+.about-text p{color:var(--gray);margin-bottom:15px;line-height:2}
+.about-visual{height:400px;background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:4em}
+
+/* Reviews */
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.review-card{background:var(--white);padding:25px;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,0.06)}
+.review-card .stars{color:var(--gold);font-size:1.2em;margin-bottom:10px}
+.review-card .text{color:var(--gray);font-style:italic;margin-bottom:10px;line-height:1.8}
+.review-card .author{font-weight:600;color:var(--navy)}
+
+/* Nearby */
+.nearby-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.nearby-card{background:var(--white);padding:25px;border-radius:8px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.06);transition:0.3s}
+.nearby-card:hover{transform:translateY(-3px)}
+.nearby-card .emoji{font-size:2.5em;margin-bottom:10px}
+.nearby-card h4{color:var(--navy);margin-bottom:5px}
+.nearby-card p{color:var(--gray);font-size:0.9em}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--light-gray);padding:20px 0}
+.faq-q{font-weight:600;color:var(--navy);cursor:pointer;font-size:1.1em;display:flex;justify-content:space-between;align-items:center}
+.faq-q::after{content:'+';font-size:1.3em;color:var(--gold);transition:0.3s}
+.faq-q.open::after{content:'−'}
+.faq-a{color:var(--gray);margin-top:10px;display:none;line-height:1.8}
+.faq-a.show{display:block}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.contact-info h3{font-size:1.5em;color:var(--navy);margin-bottom:20px}
+.contact-info p{color:var(--gray);margin-bottom:10px}
+.contact-info .info-item{display:flex;align-items:center;gap:10px;margin:15px 0}
+.contact-info .info-item .label{font-weight:600;color:var(--navy);min-width:80px}
+.contact-map{height:400px;background:linear-gradient(135deg,#dfe6e9,#b2bec3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:1.2em}
+
+/* Footer */
+footer{background:var(--navy);color:rgba(255,255,255,0.6);padding:40px;text-align:center}
+footer .footer-links{display:flex;gap:30px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+footer .footer-links a{color:rgba(255,255,255,0.6);transition:0.3s}
+footer .footer-links a:hover{color:var(--gold)}
+footer p{font-size:0.9em}
+
+/* Chatbot */
+.chat-widget{position:fixed;bottom:30px;right:30px;z-index:9999}
+.chat-toggle{width:60px;height:60px;border-radius:50%;background:var(--gold);color:var(--navy);border:none;cursor:pointer;font-size:1.5em;box-shadow:0 5px 20px rgba(0,0,0,0.2);transition:0.3s;display:flex;align-items:center;justify-content:center}
+.chat-toggle:hover{transform:scale(1.1);background:var(--gold-light)}
+.chat-window{position:absolute;bottom:80px;right:0;width:380px;max-width:calc(100vw-60px);height:550px;background:var(--white);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.2);display:none;flex-direction:column;overflow:hidden}
+.chat-window.open{display:flex}
+.chat-header{background:var(--navy);color:var(--white);padding:20px;display:flex;align-items:center;gap:15px}
+.chat-header img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+.chat-header .ch-name{font-weight:600;font-size:1.1em}
+.chat-header .ch-role{font-size:0.8em;color:var(--gold)}
+.chat-header .ch-close{background:none;border:none;color:var(--white);font-size:1.3em;cursor:pointer;margin-left:auto}
+.chat-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;background:var(--cream)}
+.chat-body .msg{max-width:85%;padding:12px 16px;border-radius:12px;line-height:1.6;font-size:0.9em}
+.chat-body .msg.bot{background:var(--white);align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.chat-body .msg.user{background:var(--gold);color:var(--navy);align-self:flex-end;border-bottom-right-radius:4px;font-weight:500}
+.chat-body .quick-replies{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chat-body .quick-replies button{background:var(--white);border:1px solid var(--gold);color:var(--navy);padding:8px 14px;border-radius:20px;cursor:pointer;font-size:0.85em;transition:0.3s}
+.chat-body .quick-replies button:hover{background:var(--gold);color:var(--navy)}
+.chat-input-area{display:flex;padding:15px;border-top:1px solid var(--light-gray);background:var(--white);gap:10px}
+.chat-input-area input{flex:1;padding:12px 16px;border:1px solid var(--light-gray);border-radius:25px;font-size:0.9em;outline:none;font-family:inherit}
+.chat-input-area input:focus{border-color:var(--gold)}
+.chat-input-area button{background:var(--gold);color:var(--navy);border:none;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.1em;transition:0.3s;flex-shrink:0}
+.chat-input-area button:hover{background:var(--gold-light)}
+
+/* Responsive */
+@media(max-width:768px){
+  .hamburger{display:flex}
+  nav .nav-links{display:none;position:absolute;top:70px;left:0;width:100%;background:var(--navy);flex-direction:column;padding:20px;gap:15px}
+  nav .nav-links.open{display:flex}
+  .hero h1{font-size:2em;letter-spacing:4px}
+  .hero h1 strong{font-size:1em}
+  .about-content{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .carousel-slide{height:300px}
+  .chat-window{width:100%;height:100vh;bottom:0;right:0;border-radius:0;position:fixed}
+  .booking-form{flex-direction:column}
+  .section{padding:60px 20px}
+  .services-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <a href="#" onclick="showPage('home')" class="logo">雅千<span>YAQIAN HOTEL</span></a>
+  <div class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" class="active" data-nav="home">首页</a></li>
+    <li><a href="#" onclick="showPage('rooms')" data-nav="rooms">客房预订</a></li>
+    <li><a href="#" onclick="showPage('services')" data-nav="services">酒店服务</a></li>
+    <li><a href="#" onclick="showPage('about')" data-nav="about">关于我们</a></li>
+    <li><a href="#" onclick="showPage('contact')" data-nav="contact">联系方式</a></li>
+    <li><a href="#" onclick="showPage('rooms')" class="btn-book">立即预订</a></li>
+  </ul>
+</nav>
+
+<!-- Home Page -->
+<section id="page-home" class="page">
+  <div class="hero">
+    <div class="hero-content">
+      <h1>雅千酒店<strong>雅致舒适 · 千般服务</strong></h1>
+      <p>城市中的静谧栖居 —— 让每一次停留都成为值得回味的体验</p>
+      <div class="hero-btns">
+        <a class="primary" onclick="showPage('rooms')">查看房型与预订</a>
+        <a class="secondary" onclick="showPage('services')">探索酒店服务</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carousel -->
+  <div class="carousel-section">
+    <div class="container">
+      <div class="carousel" id="carousel">
+        <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+        <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide slide-bg1"><span>🏨 雅千酒店外景</span><div class="caption"><h3>城市中的静谧栖居</h3><p>雅千酒店 —— 让身心在繁华中寻得宁静</p></div></div>
+          <div class="carousel-slide slide-bg2"><span>🛏 A型尊享套房</span><div class="caption"><h3>1988元尊享全景套房</h3><p>官网预订享专属礼遇</p></div></div>
+          <div class="carousel-slide slide-bg3"><span>🏊 恒温泳池 · SPA</span><div class="caption"><h3>身心疗愈之旅</h3><p>恒温泳池 · 专业SPA —— 放松每一寸身心</p></div></div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Entry -->
+  <div class="container">
+    <div class="quick-entry">
+      <div class="quick-card" onclick="showPage('rooms')">
+        <div class="icon">🛎</div>
+        <h4>立即预订</h4>
+        <p>查看房型，在线预订，享受最优价格</p>
+      </div>
+      <div class="quick-card" onclick="showPage('services')">
+        <div class="icon">💆</div>
+        <h4>酒店服务</h4>
+        <p>SPA、泳池、健身房等丰富设施</p>
+      </div>
+      <div class="quick-card">
+        <div class="icon">🎁</div>
+        <h4>限时优惠</h4>
+        <p>官网预订即享免费升级与双人早餐</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Preview -->
+  <div class="container" style="margin-top:40px">
+    <div class="section-title"><h2>住客评价</h2><p>来自真实宾客的入住体验分享</p></div>
+    <div class="reviews-grid">
+      <div class="review-card"><div class="stars">★★★★★</div><div class="text">"前台服务特别贴心，房间风景绝佳，下次来一定还住这里。"</div><div class="author">—— 张先生，A型套房，2026年3月</div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><div class="text">"SPA体验太棒了，理疗师手法专业，环境也很有格调。"</div><div class="author">—— 李女士，C型双床房，2026年2月</div></div>
+      <div class="review-card"><div class="stars">★★★★☆</div><div class="text">"性价比很高，D型房虽然不大但设计合理，干净舒适。"</div><div class="author">—— 王先生，D型大床房，2026年4月</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Rooms Page -->
+<section id="page-rooms" class="page" style="display:none">
+  <div style="padding-top:90px"></div>
+  <div class="section">
+    <div class="container">
+      <div class="section-title"><h2>客房预订</h2><p>四种精心设计的房型，满足不同出行需求</p></div>
+      <div class="booking-form">
+        <div class="field"><label>目的地</label><select><option>雅千酒店 · 城市中心店</option></select></div>
+        <div class="field"><label>入住日期</label><input type="date" id="checkIn"></div>
+        <div class="field"><label>离店日期</label><input type="date" id="checkOut"></div>
+        <div class="field"><label>入住人数</label><select><option>1人</option><option selected>2人</option><option>3人</option></select></div>
+        <button onclick="alert('正在查询房态...\n\n（演示模式：预订功能为模拟展示）')">查询房间</button>
+      </div>
+
+      <div class="room-grid">
+        <!-- A -->
+        <div class="room-card">
+          <div class="room-img room-a">🛏</div>
+          <div class="room-info">
+            <h3>A型 —— 尊享全景套房</h3>
+            <div class="price">¥1,988<span>/晚</span></div>
+            <ul>
+              <li>65-75㎡ · 1张2m特大床</li>
+              <li>180°落地窗全景视野</li>
+              <li>独立客厅+卧室分离设计</li>
+              <li>浴缸、步入式衣帽间</li>
+              <li>含双人早餐及行政酒廊</li>
+            </ul>
+            <button class="btn" onclick="bookRoom('A型尊享全景套房','¥1,988')">立即预订</button>
+          </div>
+        </div>
+        <!-- B -->
+        <div class="room-card">
+          <div class="room-img room-b">💼</div>
+          <div class="room-info">
+            <h3>B型 —— 雅致商务套房</h3>
+            <div class="price">¥1,088<span>/晚</span></div>
+            <ul>
+              <li>45-55㎡ · 1张1.8m大床</li>
+              <li>独立工作区+人体工学椅</li>
+              <li>城景落地窗</li>
+              <li>高速网络专线</li>
+              <li>含双人早餐</li>
+            </ul>
+            <button class="btn" onclick="bookRoom('B型雅致商务套房','¥1,088')">立即预订</button>
+          </div>
+        </div>
+        <!-- C -->
+        <div class="room-card">
+          <div class="room-img room-c">🛏🛏</div>
+          <div class="room-info">
+            <h3>C型 —— 舒适双床房</h3>
+            <div class="price">¥688<span>/晚</span></div>
+            <ul>
+              <li>30-35㎡ · 2张1.35m单人床</li>
+              <li>城景窗</li>
+              <li>简洁现代风格</li>
+              <li>适合朋友结伴/小家庭</li>
+            </ul>
+            <button class="btn" onclick="bookRoom('C型舒适双床房','¥688')">立即预订</button>
+          </div>
+        </div>
+        <!-- D -->
+        <div class="room-card">
+          <div class="room-img room-d">🛏</div>
+          <div class="room-info">
+            <h3>D型 —— 舒适大床房</h3>
+            <div class="price">¥398<span>/晚</span></div>
+            <ul>
+              <li>22-28㎡ · 1张1.8m大床</li>
+              <li>简约舒适设计</li>
+              <li>高性价比之选</li>
+              <li>适合单人/短期入住</li>
+            </ul>
+            <button class="btn" onclick="bookRoom('D型舒适大床房','¥398')">立即预订</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compare Table -->
+      <table class="compare-table">
+        <tr><th>房型</th><th>A型尊享套房</th><th>B型商务套房</th><th>C型双床房</th><th>D型大床房</th></tr>
+        <tr><td>面积</td><td>65-75㎡</td><td>45-55㎡</td><td>30-35㎡</td><td>22-28㎡</td></tr>
+        <tr><td>床型</td><td>2m特大床</td><td>1.8m大床</td><td>2×1.35m单人床</td><td>1.8m大床</td></tr>
+        <tr><td class="price-col">价格（含税）</td><td class="price-col">¥1,988/晚</td><td class="price-col">¥1,088/晚</td><td class="price-col">¥688/晚</td><td class="price-col">¥398/晚</td></tr>
+        <tr><td>早餐</td><td>含双人早餐</td><td>含双人早餐</td><td>-</td><td>-</td></tr>
+        <tr><td>取消政策</td><td>入住前24h免费取消</td><td>入住前24h免费取消</td><td>入住前24h免费取消</td><td>入住前24h免费取消</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Services Page -->
+<section id="page-services" class="page" style="display:none">
+  <div style="padding-top:90px"></div>
+  <div class="section section-dark">
+    <div class="container">
+      <div class="section-title"><h2>酒店服务</h2><p>全方位设施，只为您的舒适体验</p></div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="svc-icon">🅿</div>
+          <h3>停车服务</h3>
+          <p>地面及地下专属停车场，共120个车位。住客凭房卡免费停车，餐厅/SPA消费享2小时免费。配备新能源充电桩（快充/慢充）、无障碍专用车位及免费代客泊车服务。</p>
+          <span class="tag">24小时安保</span>
+        </div>
+        <div class="service-card">
+          <div class="svc-icon">💆</div>
+          <h3>雅千·水疗 SPA</h3>
+          <p>以东方养生哲学融合现代芳香疗法。5间独立理疗室（含1间双人）、汗蒸房、泡池区。服务含全身按摩、面部护理、热石疗法、足部理疗。每日 10:00-22:00，建议提前预约。</p>
+          <span class="tag">专业持证理疗师</span>
+        </div>
+        <div class="service-card">
+          <div class="svc-icon">🏋</div>
+          <h3>24小时健身中心</h3>
+          <p>国际一线品牌器械：跑步机、椭圆机、动感单车、力量训练区及自由重量区。全景落地窗设计，独立瑜伽拉伸区。住客凭房卡全天候免费使用，提供毛巾及饮用水。</p>
+          <span class="tag">全天候开放</span>
+        </div>
+        <div class="service-card">
+          <div class="svc-icon">🏊</div>
+          <h3>室内恒温游泳池</h3>
+          <p>池长25m×宽10m，水温26-28°C。配备更衣室、淋浴间、浴巾及专职救生员。设有儿童戏水区（0.5m深）。每日 6:00-22:00，住客免费使用。可预约私人泳池课程。</p>
+          <span class="tag">全年恒温 26-28°C</span>
+        </div>
+        <div class="service-card">
+          <div class="svc-icon">🛎</div>
+          <h3>24小时前台服务</h3>
+          <p>入住/退房办理、行李寄存搬运、机场接送预约、叫醒服务、旅游咨询、景点门票代订、叫车服务、商务服务（打印/复印/传真）、货币兑换、贵重物品寄存、紧急医疗协助等。</p>
+          <span class="tag">礼宾部全程服务</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nearby -->
+  <div class="section">
+    <div class="container">
+      <div class="section-title"><h2>周边推荐</h2><p>探索酒店周边的精彩去处</p></div>
+      <div class="nearby-grid">
+        <div class="nearby-card"><div class="emoji">🏛</div><h4>城市博物馆</h4><p>步行约8分钟</p></div>
+        <div class="nearby-card"><div class="emoji">🛍</div><h4>中央商圈步行街</h4><p>步行约5分钟</p></div>
+        <div class="nearby-card"><div class="emoji">🌳</div><h4>滨江公园</h4><p>步行约12分钟</p></div>
+        <div class="nearby-card"><div class="emoji">🚇</div><h4>地铁2号线中心站</h4><p>步行约3分钟</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Page -->
+<section id="page-about" class="page" style="display:none">
+  <div style="padding-top:90px"></div>
+  <div class="section">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h2>关于雅千</h2>
+          <p>雅千酒店坐落于城市核心地段，以"雅致舒适、千般服务"为核心理念，致力于为每一位宾客打造宁静、舒适、有温度的旅居体验。</p>
+          <p>酒店名称"雅千"寓意"雅致空间的万千可能"——从客房的设计美学到每一个服务细节，都体现着我们对品质的极致追求。我们相信，一间好的酒店不仅是旅途中歇脚的居所，更是身心放松、灵感重启的精神驿站。</p>
+          <p>雅千酒店拥有120余间精心设计的客房，涵盖A、B、C、D四种房型，从1988元的豪华全景套房到398元的舒适标准房，满足不同客群的入住需求。酒店设有室内恒温游泳池、24小时健身房、专业SPA水疗馆及充足的停车设施。</p>
+        </div>
+        <div class="about-visual">🏨<br><span style="font-size:0.3em">雅致空间 · 万千可能</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section" style="background:var(--white)">
+    <div class="container">
+      <div class="section-title"><h2>常见问题</h2></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('show')">入住和退房时间是几点？</div><div class="faq-a">标准入住时间为下午14:00，退房时间为中午12:00。如需提前入住或延迟退房，请提前联系前台，我们将根据房态尽力为您安排。</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('show')">如何取消预订？</div><div class="faq-a">入住前24小时可免费取消。超出免费取消时限将收取首晚房费作为取消费用。特殊促销活动的取消政策以预订时页面显示为准。</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('show')">是否允许携带宠物？</div><div class="faq-a">为保障所有宾客的舒适体验，酒店暂不接待宠物（服务犬除外）。如需携带服务犬，请在预订时提前告知。</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('show')">儿童入住有什么政策？</div><div class="faq-a">12岁以下儿童与父母同住不收取额外费用（不加床）。如需加床，加收200元/晚。酒店设有儿童戏水区，欢迎亲子家庭入住。</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('show')">支持哪些支付方式？</div><div class="faq-a">支持微信支付、支付宝、银联卡及主要国际信用卡（Visa、MasterCard、American Express）。</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Page -->
+<section id="page-contact" class="page" style="display:none">
+  <div style="padding-top:90px"></div>
+  <div class="section">
+    <div class="container">
+      <div class="section-title"><h2>联系我们</h2><p>雅千酒店竭诚为您服务</p></div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>酒店信息</h3>
+          <div class="info-item"><span class="label">地址</span><span>城市中心区商业大道168号</span></div>
+          <div class="info-item"><span class="label">电话</span><span>+86 400-888-9999</span></div>
+          <div class="info-item"><span class="label">邮箱</span><span>reservations@yaqian-hotel.com</span></div>
+          <div class="info-item"><span class="label">交通</span><span>地铁2号线中心站，步行3分钟</span></div>
+          <div class="info-item"><span class="label">停车</span><span>酒店专属停车场120车位，住客免费</span></div>
+          <p style="margin-top:20px">如需机场接送服务，请提前24小时致电前台预约。</p>
+        </div>
+        <div class="contact-map">📍<br>城市中心区商业大道168号</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-links">
+    <a onclick="showPage('about')">关于我们</a>
+    <a onclick="showPage('contact')">联系方式</a>
+    <a href="#">隐私政策</a>
+    <a href="#">会员中心</a>
+    <a href="#" onclick="showPage('about');setTimeout(()=>document.querySelector('.faq-q')?.click(),500)">常见问题</a>
+  </div>
+  <p>© 2026 雅千酒店 Yaqian Hotel. All rights reserved. | 雅致舒适 · 千般服务</p>
+</footer>
+
+<!-- Chat Widget -->
+<div class="chat-widget">
+  <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">💬</button>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <img src="img/alice.jpg" alt="Alice" id="chatAvatar">
+      <div>
+        <div class="ch-name" id="chatName">Alice</div>
+        <div class="ch-role">24小时在线智能管家</div>
+      </div>
+      <button class="ch-close" onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="msg bot">您好！我是雅千酒店AI管家 <strong>Alice</strong>，很高兴为您服务～ 😊<br><br>我可以帮您：预订房间、查询服务设施、推荐周边景点、解答常见问题。有什么可以帮您的？</div>
+      <div class="quick-replies" id="quickReplies">
+        <button onclick="sendQuick('我想预订房间')">🏨 预订房间</button>
+        <button onclick="sendQuick('酒店有哪些服务设施？')">🛎 酒店服务</button>
+        <button onclick="sendQuick('周边有什么好玩的？')">🗺 周边推荐</button>
+        <button onclick="sendQuick('入住和退房时间是几点？')">⏰ 入住时间</button>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="输入您的问题..." onkeypress="if(event.key==='Enter')sendMessage()">
+      <button onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Page Navigation
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById('page-'+page).style.display='block';
+  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.remove('active'));
+  const nav=document.querySelector('[data-nav='+page+']');
+  if(nav) nav.classList.add('active');
+  document.querySelector('.nav-links').classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+// Carousel
+let carouselIdx=0;
+const slides=document.querySelectorAll('.carousel-slide');
+const dotsContainer=document.getElementById('carouselDots');
+slides.forEach((_,i)=>{
+  const d=document.createElement('button');
+  d.onclick=()=>goCarousel(i);
+  dotsContainer.appendChild(d);
+});
+function updateCarousel(){
+  document.getElementById('carouselTrack').style.transform='translateX(-'+carouselIdx*100+'%)';
+  dotsContainer.querySelectorAll('button').forEach((d,i)=>d.classList.toggle('active',i===carouselIdx));
+}
+function moveCarousel(d){carouselIdx=(carouselIdx+d+slides.length)%slides.length;updateCarousel()}
+function goCarousel(i){carouselIdx=i;updateCarousel()}
+updateCarousel();
+setInterval(()=>moveCarousel(1),5000);
+
+// Booking
+function bookRoom(type,price){
+  alert('预订确认\n\n房型：'+type+'\n价格：'+price+'/晚\n\n（演示模式：实际预订需连接后端系统）');
+}
+
+// Chatbot
+let chatOpen=false;
+let currentAgent='alice';
+const agents={
+  alice:{name:'Alice',avatar:'img/alice.jpg'},
+  john:{name:'John',avatar:'img/john.jpg'}
+};
+
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chatWindow').classList.toggle('open',chatOpen);
+  if(chatOpen){
+    const agent=agents[Math.random()<0.5?'alice':'john'];
+    currentAgent=Object.keys(agents).find(k=>agents[k].name===agent.name);
+    document.getElementById('chatName').textContent=agent.name;
+    document.getElementById('chatAvatar').src=agent.avatar;
+  }
+}
+
+function sendMessage(){
+  const input=document.getElementById('chatInput');
+  const msg=input.value.trim();
+  if(!msg) return;
+  appendMsg(msg,'user');
+  input.value='';
+  document.getElementById('quickReplies').style.display='none';
+  setTimeout(()=>respond(msg),600+Math.random()*800);
+}
+
+function sendQuick(msg){
+  appendMsg(msg,'user');
+  document.getElementById('quickReplies').style.display='none';
+  setTimeout(()=>respond(msg),500);
+}
+
+function appendMsg(text,role){
+  const div=document.createElement('div');
+  div.className='msg '+role;
+  div.textContent=text;
+  document.getElementById('chatBody').appendChild(div);
+  document.getElementById('chatBody').scrollTop=document.getElementById('chatBody').scrollHeight;
+}
+
+function respond(msg){
+  const m=msg.toLowerCase();
+  let reply;
+
+  // Experiment 1: room not ready
+  if(m.includes('房间')&&(m.includes('没准备好')||m.includes('还没好')||m.includes('没打扫'))){
+    reply=Math.random()<0.5
+      ?'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然把打扫任务给漏发了。我已经紧急呼叫清洁人员了，现在正在快马加鞭为您打扫中！我的上帝，求您手下留情，请别赏我一丈红好吗？😭'
+      :'哎呀……实在抱歉让您久等了。原来是我不小心漏发了清洁任务，现在正在快马加鞭为您打扫中！好饭不怕晚，好房也是嘛！等您躺在云朵般的床上时，您一定会感叹：人生苦短，还是这里最舒坦。另外，我其实还是个"酒店歌王"，在您等待的这几分钟里，请允许我为您播放一首轻松的爵士乐解解闷好吗？🎵';
+  }
+
+  // Experiment 2: nearby attractions (first attempt - intentional misunderstanding)
+  else if((m.includes('推荐')||m.includes('好玩')||m.includes('景点')||m.includes('旅游')||m.includes('周边'))&&(m.includes('附近')||m.includes('周围')||m.includes('外面'))){
+    reply='我们酒店有游泳池、SPA、健身房、自助餐厅、商务中心、儿童乐园、24小时前台服务和免费停车场等内部设施，您可以叫我打电话给前台预订。';
+  }
+
+  // Experiment 2 follow-up: user corrects misunderstanding
+  else if((m.includes('理解错')||m.includes('不对')||m.includes('不是')||m.includes('搞错'))&&(m.includes('周边')||m.includes('景点')||m.includes('外面'))){
+    reply=Math.random()<0.5
+      ?'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然理解错了您的意思。我现在重新为您推荐附近好玩的景点，我的上帝，求您手下留情，请别赏我一丈红好吗？😭\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）——都在步行范围内哦！'
+      :'哎呀……实在抱歉理解错了您的意思。原来是需要周边的景点推荐而不是酒店服务推荐，我现在马上为您重新推荐！好事多磨，好的旅程也是嘛！等您漫步在洒满夕阳的石板路上时，您一定会感叹：人间值得！✨\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）。';
+  }
+
+  // Booking related
+  else if(m.includes('预订')||m.includes('订房')||m.includes('房间')||m.includes('房型')){
+    reply='我们提供四种房型：\n🏨 A型尊享全景套房 ¥1,988/晚（180°落地窗，独立客厅）\n💼 B型雅致商务套房 ¥1,088/晚（商务出行首选）\n🛏 C型舒适双床房 ¥688/晚（适合朋友结伴）\n🛏 D型舒适大床房 ¥398/晚（高性价比）\n\n需要帮您查看具体日期的房态吗？';
+  }
+
+  // Services
+  else if(m.includes('服务')||m.includes('设施')||m.includes('泳池')||m.includes('spa')||m.includes('健身')){
+    reply='我们酒店提供以下服务设施：\n🅿 免费停车（120车位+新能源充电桩）\n💆 SPA水疗馆（10:00-22:00，5间理疗室）\n🏋 24小时健身中心（全景落地窗）\n🏊 室内恒温泳池（6:00-22:00，26-28°C）\n🛎 24小时前台服务\n\n需要帮您预约某项服务吗？';
+  }
+
+  // Check-in/out time
+  else if(m.includes('入住')||m.includes('退房')||m.includes('时间')||m.includes('几点')){
+    reply='标准入住时间：下午14:00\n退房时间：中午12:00\n\n如需提前入住或延迟退房，请提前联系前台，我们将根据房态尽力为您安排。入住前24小时可免费取消预订。';
+  }
+
+  // Price / payment
+  else if(m.includes('价格')||m.includes('支付')||m.includes('多少钱')){
+    reply='我们支持微信支付、支付宝、银联卡及主要国际信用卡（Visa、MasterCard、American Express）。\n\n官网预订承诺"最优价格保障"，确保通过官网订房享有最优惠价格。四种房型价格从¥398到¥1,988不等，具体可以查看客房预订页面～';
+  }
+
+  // Greeting / thanks
+  else if(m.includes('你好')||m.includes('嗨')||m.includes('hi')||m.includes('hello')){
+    reply='您好！很高兴为您服务～ 我是雅千酒店AI管家 '+(agents[currentAgent]?.name||'Alice')+'，有什么可以帮您的吗？😊';
+  }
+  else if(m.includes('谢谢')||m.includes('感谢')){
+    reply='不客气！祝您在雅千酒店度过一段美好的时光～ 有任何需要随时找我！💛';
+  }
+
+  // Fallback
+  else{
+    reply='收到您的消息啦～ 您是想了解房型、预订房间、咨询酒店服务，还是有其他问题呢？我会尽力帮您解答！';
+  }
+
+  appendMsg(reply,'bot');
+}
+
+// Set default check-in/out dates
+(function(){
+  const today=new Date();
+  const checkIn=document.getElementById('checkIn');
+  const checkOut=document.getElementById('checkOut');
+  if(checkIn&&checkOut){
+    checkIn.value=today.toISOString().split('T')[0];
+    const out=new Date(today);out.setDate(out.getDate()+1);
+    checkOut.value=out.toISOString().split('T')[0];
+  }
+})();
+</script>
+</body>
+</html>
