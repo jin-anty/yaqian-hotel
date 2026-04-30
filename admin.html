@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雅千酒店 · 管理员后台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1a1a2e;--gold:#c9a96e;--white:#fff;--bg:#f5f5f5;--border:#e0e0e0;--text:#333;--gray:#888;--red:#e74c3c;--green:#27ae60}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:var(--navy);color:var(--white);padding:16px 30px;display:flex;justify-content:space-between;align-items:center}
+header h1{font-size:1.4em;font-weight:600;letter-spacing:1px}
+header h1 span{color:var(--gold)}
+header .back{color:var(--gold);text-decoration:none;font-size:0.9em}
+.container{max-width:1200px;margin:30px auto;padding:0 20px}
+.tabs{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:140px;padding:14px;border:none;background:var(--white);cursor:pointer;font-size:0.95em;font-weight:500;border-radius:8px 8px 0 0;transition:0.2s;border-bottom:3px solid transparent}
+.tabs button.active{border-bottom-color:var(--gold);color:var(--navy);font-weight:700}
+.tabs button:hover{background:#fafafa}
+.panel{display:none;background:var(--white);border-radius:0 12px 12px 12px;padding:30px;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.panel.active{display:block}
+h2{font-size:1.3em;color:var(--navy);margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--gold)}
+.section{margin-bottom:30px}
+.section h3{font-size:1.1em;color:var(--navy);margin-bottom:12px}
+label{display:block;font-size:0.9em;color:var(--gray);margin-bottom:6px;font-weight:600}
+input[type="text"],input[type="url"],textarea,select{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:0.95em;font-family:inherit;margin-bottom:12px;transition:0.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,0.15)}
+textarea{min-height:100px;resize:vertical;line-height:1.6}
+.btn{padding:10px 24px;border:none;border-radius:6px;cursor:pointer;font-size:0.95em;font-weight:600;transition:0.2s}
+.btn-primary{background:var(--gold);color:var(--navy)}
+.btn-primary:hover{opacity:0.9}
+.btn-danger{background:var(--red);color:var(--white)}
+.btn-danger:hover{opacity:0.9}
+.btn-outline{background:var(--white);color:var(--navy);border:2px solid var(--navy)}
+.btn-outline:hover{background:var(--navy);color:var(--white)}
+.btn-sm{padding:6px 14px;font-size:0.85em}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.avatar-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:10px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.row{grid-template-columns:1fr}}
+
+/* Chat history */
+.history-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.history-controls select,.history-controls input{padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9em;margin-bottom:0;width:auto}
+.history-list{max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px}
+.history-item{padding:14px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:0.15s;display:flex;align-items:flex-start;gap:12px}
+.history-item:hover{background:#faf7f2}
+.history-item.selected{background:#fff8e7;border-left:3px solid var(--gold)}
+.history-item .checkbox{margin-top:3px}
+.history-item .content{flex:1}
+.history-item .meta{font-size:0.8em;color:var(--gray);margin-bottom:4px}
+.history-item .meta .tag{display:inline-block;background:var(--navy);color:var(--white);padding:2px 8px;border-radius:10px;font-size:0.85em;margin-right:6px}
+.history-item .meta .tag.self{background:#e74c3c}
+.history-item .meta .tag.aff{background:#3498db}
+.history-item .meta .tag.first{background:#95a5a6}
+.history-item .user-msg{color:var(--navy);font-weight:500;margin-bottom:4px}
+.history-item .bot-msg{color:var(--gray);font-size:0.9em;line-height:1.5}
+.empty-state{text-align:center;padding:60px 20px;color:var(--gray)}
+.empty-state .icon{font-size:3em;margin-bottom:10px}
+.toast{position:fixed;top:20px;right:20px;background:var(--green);color:var(--white);padding:12px 24px;border-radius:8px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.file-upload{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.file-upload input[type="file"]{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>雅千酒店 <span>管理员后台</span></h1>
+  <a href="index.html" class="back">← 返回网站</a>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="active" onclick="switchTab('avatar')">🤖 机器人头像</button>
+    <button onclick="switchTab('replies')">💬 回复内容</button>
+    <button onclick="switchTab('experiment')">🧪 实验组别</button>
+    <button onclick="switchTab('history')">📋 聊天记录</button>
+  </div>
+
+  <!-- Avatar Panel -->
+  <div class="panel active" id="panel-avatar">
+    <h2>聊天机器人头像设置</h2>
+    <div class="row">
+      <div class="section">
+        <h3>Alice 头像</h3>
+        <img class="avatar-preview" id="preview-alice" src="../img/alice.jpg" alt="Alice">
+        <div class="file-upload">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-alice').click()">选择图片</button>
+          <input type="file" id="file-alice" accept="image/*" onchange="previewFile('alice')">
+        </div>
+        <label>或输入图片URL</label>
+        <input type="text" id="url-alice" placeholder="https://...或 img/alice.jpg">
+      </div>
+      <div class="section">
+        <h3>John 头像</h3>
+        <img class="avatar-preview" id="preview-john" src="../img/john.jpg" alt="John">
+        <div class="file-upload">
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-john').click()">选择图片</button>
+          <input type="file" id="file-john" accept="image/*" onchange="previewFile('john')">
+        </div>
+        <label>或输入图片URL</label>
+        <input type="text" id="url-john" placeholder="https://...或 img/john.jpg">
+      </div>
+    </div>
+    <div class="btn-group" style="margin-top:20px">
+      <button class="btn btn-primary" onclick="saveAvatars()">💾 保存头像</button>
+    </div>
+  </div>
+
+  <!-- Replies Panel -->
+  <div class="panel" id="panel-replies">
+    <h2>聊天机器人回复内容编辑</h2>
+    <div class="section">
+      <h3>🧪 实验1：房间未准备好 → 自嘲式幽默回复</h3>
+      <textarea id="reply-room-self" rows="3"></textarea>
+    </div>
+    <div class="section">
+      <h3>🧪 实验1：房间未准备好 → 亲和式幽默回复</h3>
+      <textarea id="reply-room-aff" rows="3"></textarea>
+    </div>
+    <div class="section">
+      <h3>🧪 实验2：用户问周边 → 首次故意误解回复</h3>
+      <textarea id="reply-nearby-first" rows="3"></textarea>
+    </div>
+    <div class="section">
+      <h3>🧪 实验2：用户纠正误解 → 自嘲式幽默回复</h3>
+      <textarea id="reply-nearby-self" rows="3"></textarea>
+    </div>
+    <div class="section">
+      <h3>🧪 实验2：用户纠正误解 → 亲和式幽默回复</h3>
+      <textarea id="reply-nearby-aff" rows="3"></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveReplies()">💾 保存回复内容</button>
+      <button class="btn btn-outline" onclick="resetReplies()">↺ 恢复默认</button>
+    </div>
+  </div>
+
+  <!-- Experiment Panel -->
+  <div class="panel" id="panel-experiment">
+    <h2>实验组别设置</h2>
+    <p style="color:var(--gray);margin-bottom:20px">控制聊天机器人在实验场景中使用的幽默风格。选择"随机"则每次50%概率随机选择。</p>
+    <div class="section">
+      <h3>当前实验组别</h3>
+      <select id="experiment-group" style="max-width:400px">
+        <option value="random">🔀 随机（自嘲式 / 亲和式 各50%）</option>
+        <option value="self_deprecating">😭 自嘲式幽默</option>
+        <option value="affectionate">😊 亲和式幽默</option>
+      </select>
+      <div style="margin-top:16px;padding:16px;background:#faf7f2;border-radius:8px;border-left:4px solid var(--gold)">
+        <strong style="color:var(--navy)">当前生效范围：</strong>
+        <ul style="margin:8px 0 0 20px;color:var(--gray);line-height:1.8">
+          <li>实验1：房间未准备好时的回复</li>
+          <li>实验2：用户纠正误解后的周边推荐回复</li>
+        </ul>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveExperiment()">💾 保存组别</button>
+    </div>
+  </div>
+
+  <!-- History Panel -->
+  <div class="panel" id="panel-history">
+    <h2>用户聊天记录</h2>
+    <div class="history-controls">
+      <select id="filter-group" onchange="renderHistory()">
+        <option value="all">全部组别</option>
+        <option value="self_deprecating">😭 自嘲式幽默</option>
+        <option value="affectionate">😊 亲和式幽默</option>
+        <option value="nearby_first">🏨 首次误解</option>
+      </select>
+      <input type="text" id="filter-search" placeholder="搜索聊天内容..." oninput="renderHistory()">
+      <button class="btn btn-primary btn-sm" onclick="selectAll()">全选</button>
+      <button class="btn btn-outline btn-sm" onclick="deselectAll()">取消全选</button>
+      <button class="btn btn-outline btn-sm" onclick="exportSelected()">📥 导出选中</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteSelected()">🗑 删除选中</button>
+      <span id="record-count" style="color:var(--gray);font-size:0.9em;margin-left:auto"></span>
+    </div>
+    <div class="history-list" id="history-list">
+      <div class="empty-state"><div class="icon">📭</div><p>暂无聊天记录</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Config helpers
+function getConfig(){try{return JSON.parse(localStorage.getItem('yaqian_admin_config'))||getDefaultConfig()}catch(e){return getDefaultConfig()}}
+function getDefaultConfig(){return {
+  experimentGroup:'random',
+  avatar_alice:'img/alice.jpg',avatar_john:'img/john.jpg',
+  reply_room_self:'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然把打扫任务给漏发了。我已经紧急呼叫清洁人员了，现在正在快马加鞭为您打扫中！我的上帝，求您手下留情，请别赏我一丈红好吗？😭',
+  reply_room_aff:'哎呀……实在抱歉让您久等了。原来是我不小心漏发了清洁任务，现在正在快马加鞭为您打扫中！好饭不怕晚，好房也是嘛！等您躺在云朵般的床上时，您一定会感叹：人生苦短，还是这里最舒坦。另外，我其实还是个"酒店歌王"，在您等待的这几分钟里，请允许我为您播放一首轻松的爵士乐解解闷好吗？🎵',
+  reply_nearby_first:'我们酒店有游泳池、SPA、健身房、自助餐厅、商务中心、儿童乐园、24小时前台服务和免费停车场等内部设施，您可以叫我打电话给前台预订。',
+  reply_nearby_self:'呜呜呜，我真是个大笨蛋！我现在流下的眼泪，都是当初脑子里进的水，竟然理解错了您的意思。我现在重新为您推荐附近好玩的景点，我的上帝，求您手下留情，请别赏我一丈红好吗？😭\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）——都在步行范围内哦！',
+  reply_nearby_aff:'哎呀……实在抱歉理解错了您的意思。原来是需要周边的景点推荐而不是酒店服务推荐，我现在马上为您重新推荐！好事多磨，好的旅程也是嘛！等您漫步在洒满夕阳的石板路上时，您一定会感叹：人间值得！✨\n\n为您推荐：🏛 城市博物馆（步行8分钟）、🛍 中央商圈步行街（步行5分钟）、🌳 滨江公园（步行12分钟）。'
+}}
+
+function saveConfig(cfg){localStorage.setItem('yaqian_admin_config',JSON.stringify(cfg))}
+
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
+
+// Tab switching
+function switchTab(tab){
+  document.querySelectorAll('.tabs button').forEach((b,i)=>{
+    const tabs=['avatar','replies','experiment','history'];
+    b.classList.toggle('active',tabs[i]===tab)
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='history') renderHistory();
+}
+
+// Avatar panel
+function previewFile(agent){
+  const file=document.getElementById('file-'+agent).files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('preview-'+agent).src=e.target.result;
+    document.getElementById('url-'+agent).value=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function saveAvatars(){
+  const cfg=getConfig();
+  const urlA=document.getElementById('url-alice').value.trim();
+  const urlJ=document.getElementById('url-john').value.trim();
+  if(urlA) cfg.avatar_alice=urlA;
+  if(urlJ) cfg.avatar_john=urlJ;
+  saveConfig(cfg);
+  document.getElementById('preview-alice').src=urlA||cfg.avatar_alice;
+  document.getElementById('preview-john').src=urlJ||cfg.avatar_john;
+  toast('✅ 头像已保存');
+}
+
+// Replies panel
+function loadReplies(){
+  const cfg=getConfig();
+  document.getElementById('reply-room-self').value=cfg.reply_room_self;
+  document.getElementById('reply-room-aff').value=cfg.reply_room_aff;
+  document.getElementById('reply-nearby-first').value=cfg.reply_nearby_first;
+  document.getElementById('reply-nearby-self').value=cfg.reply_nearby_self;
+  document.getElementById('reply-nearby-aff').value=cfg.reply_nearby_aff;
+}
+function saveReplies(){
+  const cfg=getConfig();
+  cfg.reply_room_self=document.getElementById('reply-room-self').value.trim();
+  cfg.reply_room_aff=document.getElementById('reply-room-aff').value.trim();
+  cfg.reply_nearby_first=document.getElementById('reply-nearby-first').value.trim();
+  cfg.reply_nearby_self=document.getElementById('reply-nearby-self').value.trim();
+  cfg.reply_nearby_aff=document.getElementById('reply-nearby-aff').value.trim();
+  saveConfig(cfg);
+  toast('✅ 回复内容已保存');
+}
+function resetReplies(){
+  if(!confirm('确定要恢复所有回复内容为默认值吗？')) return;
+  const def=getDefaultConfig();
+  document.getElementById('reply-room-self').value=def.reply_room_self;
+  document.getElementById('reply-room-aff').value=def.reply_room_aff;
+  document.getElementById('reply-nearby-first').value=def.reply_nearby_first;
+  document.getElementById('reply-nearby-self').value=def.reply_nearby_self;
+  document.getElementById('reply-nearby-aff').value=def.reply_nearby_aff;
+  toast('↺ 已恢复默认值，记得点保存');
+}
+
+// Experiment panel
+function loadExperiment(){
+  document.getElementById('experiment-group').value=getConfig().experimentGroup||'random';
+}
+function saveExperiment(){
+  const cfg=getConfig();
+  cfg.experimentGroup=document.getElementById('experiment-group').value;
+  saveConfig(cfg);
+  toast('✅ 实验组别已保存');
+}
+
+// History panel
+let selectedIds=new Set();
+
+function getHistory(){try{return JSON.parse(localStorage.getItem('yaqian_chat_history')||'[]')}catch(e){return[]}}
+
+function renderHistory(){
+  const hist=getHistory();
+  const filter=document.getElementById('filter-group').value;
+  const search=document.getElementById('filter-search').value.toLowerCase();
+  let filtered=hist;
+  if(filter!=='all') filtered=filtered.filter(h=>h.experimentGroup===filter);
+  if(search) filtered=filtered.filter(h=>h.user.toLowerCase().includes(search)||h.bot.toLowerCase().includes(search));
+  filtered.reverse();
+
+  const container=document.getElementById('history-list');
+  document.getElementById('record-count').textContent='共 '+filtered.length+' 条';
+
+  if(!filtered.length){container.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>'+(search?'无匹配记录':'暂无聊天记录')+'</p></div>';return}
+
+  function tagLabel(g){
+    if(g==='self_deprecating') return '<span class="tag self">自嘲式幽默</span>';
+    if(g==='affectionate') return '<span class="tag aff">亲和式幽默</span>';
+    if(g==='nearby_first') return '<span class="tag first">首次误解</span>';
+    return '';
+  }
+
+  container.innerHTML=filtered.map(h=>{
+    const sel=selectedIds.has(h.id)?' selected':'';
+    return `<div class="history-item${sel}" onclick="toggleSelect('${h.id}',event)">
+      <input type="checkbox" class="checkbox" ${sel?'checked':''} onclick="event.stopPropagation();toggleSelect('${h.id}')">
+      <div class="content">
+        <div class="meta">${tagLabel(h.experimentGroup)} ${h.agent} · ${new Date(h.timestamp).toLocaleString('zh-CN')}</div>
+        <div class="user-msg">👤 ${h.user}</div>
+        <div class="bot-msg">🤖 ${h.bot}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSelect(id,event){
+  if(event&&event.target.tagName==='INPUT'){if(event.target.checked)selectedIds.add(id);else selectedIds.delete(id)}
+  else{if(selectedIds.has(id))selectedIds.delete(id);else selectedIds.add(id)}
+  renderHistory();
+}
+
+function selectAll(){
+  const hist=getHistory();hist.forEach(h=>selectedIds.add(h.id));renderHistory();
+}
+function deselectAll(){
+  selectedIds.clear();renderHistory();
+}
+
+function exportSelected(){
+  const hist=getHistory();
+  const selected=hist.filter(h=>selectedIds.has(h.id));
+  if(!selected.length){toast('⚠️ 请先选择要导出的记录');return}
+
+  let csv='时间,用户,代理,实验组别,用户消息,机器人回复\n';
+  selected.forEach(h=>{
+    const escape=t=>'"'+(t||'').replace(/"/g,'""')+'"';
+    csv+=[new Date(h.timestamp).toLocaleString('zh-CN'),h.agent,h.experimentGroup,escape(h.user),escape(h.bot)].join(',')+'\n';
+  });
+
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='雅千酒店聊天记录_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('📥 已导出 '+selected.length+' 条记录');
+}
+
+function deleteSelected(){
+  if(!selectedIds.size){toast('⚠️ 请先选择要删除的记录');return}
+  if(!confirm('确定要删除选中的 '+selectedIds.size+' 条聊天记录吗？此操作不可恢复。')) return;
+  const hist=getHistory().filter(h=>!selectedIds.has(h.id));
+  localStorage.setItem('yaqian_chat_history',JSON.stringify(hist));
+  selectedIds.clear();
+  renderHistory();
+  toast('🗑 已删除记录');
+}
+
+// Init
+(function(){
+  loadReplies();
+  loadExperiment();
+  const cfg=getConfig();
+  document.getElementById('url-alice').value=cfg.avatar_alice;
+  document.getElementById('url-john').value=cfg.avatar_john;
+  document.getElementById('preview-alice').src=cfg.avatar_alice;
+  document.getElementById('preview-john').src=cfg.avatar_john;
+  // URL param to check if admin page was directly accessed
+  document.getElementById('url-alice').addEventListener('change',function(){
+    if(this.value.trim()) document.getElementById('preview-alice').src=this.value.trim();
+  });
+  document.getElementById('url-john').addEventListener('change',function(){
+    if(this.value.trim()) document.getElementById('preview-john').src=this.value.trim();
+  });
+})();
+</script>
+</body>
+</html>
