@@ -211,7 +211,8 @@ function sp(name) {
   document.querySelectorAll('.tabbar button').forEach(b => b.classList.remove('active'));
   document.getElementById('pg-' + name).classList.add('active');
   document.querySelectorAll('.tabbar button')[['service','chat','me'].indexOf(name)].classList.add('active');
-  if (name === 'chat') rc();
+  if (name === 'chat') { currentSession = null; sessions = getSessions(); rc(); }
+  if (name === 'me') up();
 }
 
 // ═══════ STORAGE ═══════
@@ -224,12 +225,7 @@ function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { r
 function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
 
 let sessions = getSessions();
-let currentSession = sessions.length > 0 ? sessions[sessions.length-1] : null;
-if (currentSession && currentSession.messages && currentSession.messages.length > 0) {
-  // resume latest session
-} else {
-  currentSession = null;
-}
+let currentSession = null;  // always start fresh on page load; session auto-saves on each message
 
 // ═══════ KNOWLEDGE ═══════
 const KB = {
@@ -371,15 +367,11 @@ function dologin() {
   if (!u) return tst('未注册', 'error');
   if (u.password !== w) return tst('密码错误', 'error');
   tst('登录成功！', 'success'); su(u);
-  // switch user: save previous session, start fresh
-  currentSession = null;
-  sessions = getSessions();
-  currentSession = sessions.length > 0 ? sessions[sessions.length-1] : null;
-  if (currentSession && (!currentSession.messages || currentSession.messages.length === 0)) currentSession = null;
-  rc();
+  // switch user: always start fresh
+  currentSession = null; sessions = getSessions(); rc();
 }
 function su(u) { cu = { name: u.name, phone: u.phone, orders: u.orders, points: u.points }; s(SK.user, cu); up(); }
-function dologout() { cu = null; localStorage.removeItem(SK.user); currentSession = null; sessions = getSessions(); currentSession = sessions.length > 0 ? sessions[sessions.length-1] : null; up(); rc(); }
+function dologout() { cu = null; localStorage.removeItem(SK.user); currentSession = null; sessions = getSessions(); up(); rc(); }
 function up() {
   if (cu) {
     document.getElementById('authForm').style.display = 'none';
