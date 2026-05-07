@@ -216,16 +216,19 @@ function sp(name) {
 }
 
 // ═══════ STORAGE ═══════
-const SK = { user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_v4' };
+const SK = { user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_v4', chars: 'yaqian_chars' };
 const SESS_PREFIX = 'yaqian_sessions_';
 function sessionsKey() { const u = g(SK.user); return SESS_PREFIX + (u ? u.phone : 'guest'); }
 function getSessions() { return g(sessionsKey()) || []; }
 function saveSessions(ss) { s(sessionsKey(), ss); }
 function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
 function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+function eh(v) { const d = document.createElement('div'); d.textContent = v||''; return d.innerHTML; }
 
 let sessions = getSessions();
 let currentSession = null;  // always start fresh on page load; session auto-saves on each message
+
+function getChars() { return g(SK.chars) || { botName: 'Alice', botAv: 'A', userName: '客人', userAv: '客' }; }
 
 // ═══════ KNOWLEDGE ═══════
 const KB = {
@@ -262,15 +265,16 @@ function startSessionIfNeeded() {
 }
 function getCurrentMessages() { return currentSession ? currentSession.messages : []; }
 function rc() {
+  const ch = getChars();
   const msgs = getCurrentMessages();
   const c = document.getElementById('chatMsgs');
   if (msgs.length === 0) {
-    c.innerHTML = '<div class="msg bot"><div class="av">A</div><div><div class="bub">您好！我是雅千AI管家 <b>Alice</b> 👋<br><br>🛏 客房 · 💆 SPA · 🏊 泳池<br>🍳 早餐 · 🗺️ 周边 · 🚗 接送<br><br>请问有什么可以帮您？</div></div></div>';
+    c.innerHTML = '<div class="msg bot"><div class="av">'+eh(ch.botAv)+'</div><div><div class="bub">您好！我是雅千AI管家 <b>'+eh(ch.botName)+'</b> 👋<br><br>🛏 客房 · 💆 SPA · 🏊 泳池<br>🍳 早餐 · 🗺️ 周边 · 🚗 接送<br><br>请问有什么可以帮您？</div></div></div>';
     return;
   }
   c.innerHTML = msgs.map(m => {
     const u = m.role === 'user';
-    return `<div class="msg ${u?'user':'bot'}"><div class="av">${u?'客':'A'}</div><div><div class="bub">${m.content}</div><div class="t">${m.time||''}</div></div></div>`;
+    return `<div class="msg ${u?'user':'bot'}"><div class="av">${u?eh(ch.userAv):eh(ch.botAv)}</div><div><div class="bub">${m.content}</div><div class="t">${m.time||''}</div></div></div>`;
   }).join('');
   c.scrollTop = c.scrollHeight;
 }
@@ -327,8 +331,9 @@ function findKB(text) {
   return null;
 }
 async function callDS(msg, cfg) {
+  const ch = getChars();
   const msgs = getCurrentMessages();
-  const ms = [{ role: 'system', content: cfg.systemPrompt || '你是雅千酒店AI管家Alice。' },
+  const ms = [{ role: 'system', content: cfg.systemPrompt || '你是雅千酒店AI管家'+ch.botName+'。' },
     ...msgs.slice(-8).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content.replace(/<[^>]+>/g, '') })),
     { role: 'user', content: msg }];
   const r = await fetch('https://api.deepseek.com/v1/chat/completions', {
