@@ -58,12 +58,24 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 
 .disabled-section { opacity: 0.4; pointer-events: none; }
 
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { text-align: left; padding: 9px 10px; background: #f9f8f5; border-bottom: 2px solid var(--border); font-size: 11px; color: var(--text3); font-weight: 600; }
-td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
-.role-tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; }
-.role-tag.user { background: var(--primary); color: #fff; } .role-tag.bot { background: var(--gold-light); color: var(--primary); }
-.msg-cell { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* history */
+.session-card { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden; }
+.session-head { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fafaf8; }
+.session-head:hover { background: #f5f3ef; }
+.session-head .sh-left { display: flex; gap: 12px; align-items: center; }
+.session-head .sh-date { font-size: 12px; color: var(--text2); font-weight: 500; }
+.session-head .sh-count { font-size: 11px; color: var(--text3); }
+.session-head .sh-preview { font-size: 13px; color: var(--text); max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-head .sh-arrow { font-size: 11px; color: var(--text3); transition: 0.2s; }
+.session-head.open .sh-arrow { transform: rotate(180deg); }
+.session-body { display: none; padding: 0 14px 12px; }
+.session-body.open { display: block; }
+.session-msg { display: flex; gap: 8px; margin-bottom: 8px; }
+.session-msg .sm-role { font-size: 10px; font-weight: 600; width: 32px; flex-shrink: 0; text-align: center; }
+.session-msg .sm-role.u { color: var(--primary); }
+.session-msg .sm-role.b { color: var(--gold); }
+.session-msg .sm-content { font-size: 12px; color: var(--text); line-height: 1.6; flex: 1; }
+.session-msg .sm-time { font-size: 10px; color: var(--text3); flex-shrink: 0; }
 
 .toast { position: fixed; top: 14px; right: 14px; padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; color: #fff; z-index: 1000; animation: si 0.3s ease; }
 .toast.success { background: var(--success); } .toast.error { background: var(--error); }
@@ -88,7 +100,7 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
     <section id="section-experiment" class="active">
       <div class="card">
         <h2>🧪 实验设置</h2>
-        <p class="desc">开启后，选中一个组别，前台匹配到该组的触发词时使用预设回复（<b>优先级高于DeepSeek</b>）。关闭后不触发。</p>
+        <p class="desc">开启后，选中一个组别，前台匹配到该组的触发词时使用预设回复（<b>优先级高于DeepSeek</b>）。关闭后不触发，走DeepSeek兜底。</p>
 
         <div class="toggle-row">
           <label class="toggle"><input type="checkbox" id="expOn" onchange="te()"><span class="slider"></span></label>
@@ -120,7 +132,7 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
           <span class="toggle-label">启用 DeepSeek</span>
           <span id="dsBadge" class="badge badge-warning">未启用</span>
         </div>
-        <div class="fg"><label>API Key</label><input type="password" id="dsKey" placeholder="sk-..."><div class="hint"><a href="https://platform.deepseek.com/api_keys" target="_blank">获取 Key</a></div></div>
+        <div class="fg"><label>API Key</label><input type="password" id="dsKey" placeholder="sk-..."></div>
         <div class="fg"><label>模型</label><select id="dsModel"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select></div>
         <div class="fg"><label>System Prompt</label><textarea id="dsPrompt" rows="3"></textarea></div>
         <div class="btn-group"><button class="btn btn-primary" onclick="saveDS()">💾 保存</button><button class="btn btn-outline" onclick="testDS()">🧪 测试</button><button class="btn btn-outline" onclick="resetDS()">恢复默认</button></div>
@@ -132,18 +144,17 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
     <section id="section-history">
       <div class="card">
         <h2>📋 聊天记录</h2>
-        <p class="desc">按用户查看聊天记录。每个用户的聊天独立保存。</p>
-        <div class="fg-row" style="margin-bottom:14px;">
-          <div class="fg"><label>用户</label><select id="hu" onchange="rh()"><option value="">加载中...</option></select></div>
-          <div class="fg"><label>角色</label><select id="hf" onchange="rh()"><option value="all">全部</option><option value="user">用户</option><option value="bot">AI</option></select></div>
-          <div class="fg"><label>搜索</label><input type="text" id="hs" placeholder="搜索内容..." oninput="rh()"></div>
+        <p class="desc">按用户查看会话。每组会话是该用户与AI的完整对话。切换用户时自动开启新会话。</p>
+        <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+          <div class="fg" style="flex:1;min-width:160px;"><label>用户</label><select id="hu" onchange="rh()"><option value="">加载中...</option></select></div>
+          <div class="fg" style="flex:1;min-width:160px;"><label>搜索</label><input type="text" id="hs" placeholder="搜索会话内容..." oninput="rh()"></div>
         </div>
         <div class="btn-group" style="margin-bottom:14px;">
-          <button class="btn btn-danger btn-sm" onclick="delUserHist()">🗑 删除此用户记录</button>
-          <button class="btn btn-outline btn-sm" onclick="exCSV()">📥 导出CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="exUserCSV()">📥 导出此用户CSV</button>
+          <button class="btn btn-danger btn-sm" onclick="delAllUserSessions()">🗑 删除此用户全部记录</button>
         </div>
-        <table><thead><tr><th>时间</th><th>角色</th><th>内容</th></tr></thead><tbody id="htb"></tbody></table>
-        <div id="he" style="text-align:center;padding:30px;color:var(--text3);display:none;">暂无记录</div>
+        <div id="sessionsContainer"></div>
+        <div id="he" style="text-align:center;padding:30px;color:var(--text3);display:none;">暂无会话记录</div>
       </div>
     </section>
   </main>
@@ -151,7 +162,7 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
 
 <script>
 const KEYS = { exp: 'yaqian_exp_v4', ds: 'yaqian_deepseek_cfg' };
-const CHAT_PREFIX = 'yaqian_chat_';
+const SESS_PREFIX = 'yaqian_sessions_';
 
 const DEF_EXP = {
   enabled: false,
@@ -235,7 +246,6 @@ function re(cfg) {
 function switchGroup() {
   const cfg = g(KEYS.exp) || DEF_EXP;
   const newId = document.getElementById('activeGroup').value;
-  // Save current group's edits to cfg first
   syncActiveGroupEdits(cfg);
   cfg.activeGroup = newId;
   s(KEYS.exp, cfg);
@@ -362,54 +372,117 @@ async function testDS() {
   } catch(e) { div.innerHTML = '<span class="badge badge-error">❌ 网络错误</span><div class="http-status">'+eh(e.message)+'</div>'; }
 }
 
-// ═══ HISTORY (per-user) ═══
-function getUserKeys() {
-  const keys = [];
+// ═══ HISTORY (sessions per user) ═══
+function getAllSessionsUsers() {
+  const users = [];
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
-    if (k && k.startsWith(CHAT_PREFIX)) keys.push(k.replace(CHAT_PREFIX, ''));
+    if (k && k.startsWith(SESS_PREFIX)) users.push(k.replace(SESS_PREFIX, ''));
   }
-  return keys;
+  return users.sort();
+}
+
+function getSessionsForUser(uid) {
+  return g(SESS_PREFIX + uid) || [];
 }
 
 function lh() {
   const sel = document.getElementById('hu');
-  const users = getUserKeys();
+  const users = getAllSessionsUsers();
   sel.innerHTML = users.length ? users.map(u => `<option value="${eh(u)}">${eh(u)}</option>`).join('') : '<option value="">无记录</option>';
   rh();
 }
 
 function rh() {
   const uid = document.getElementById('hu').value;
-  if (!uid) { document.getElementById('htb').innerHTML=''; document.getElementById('he').style.display='block'; return; }
-  const hist = g(CHAT_PREFIX + uid) || [];
-  const f = document.getElementById('hf').value;
-  const s = (document.getElementById('hs').value||'').toLowerCase();
-  let fl = hist;
-  if (f!=='all') fl = fl.filter(m => m.role===f);
-  if (s) fl = fl.filter(m => (m.content||'').toLowerCase().includes(s));
-  const tbody = document.getElementById('htb');
+  const cont = document.getElementById('sessionsContainer');
   const empty = document.getElementById('he');
-  if (!fl.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
-  tbody.innerHTML = fl.map(m => `<tr><td>${m.time||'-'}</td><td><span class="role-tag ${m.role}">${m.role==='user'?'用户':'AI'}</span></td><td><div class="msg-cell" title="${eh(m.content)}">${eh(m.content)}</div></td></tr>`).join('');
+  if (!uid) { cont.innerHTML=''; empty.style.display='block'; return; }
+
+  const sessions = getSessionsForUser(uid);
+  if (!sessions.length) { cont.innerHTML=''; empty.style.display='block'; return; }
+
+  empty.style.display = 'none';
+  const sq = (document.getElementById('hs').value || '').toLowerCase();
+
+  let html = '<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">共 ' + sessions.length + ' 组会话</div>';
+  sessions.slice().reverse().forEach((sess, idx) => {
+    // Filter by search
+    if (sq) {
+      const allText = (sess.messages || []).map(m => m.content || '').join('') + (sess.firstMsg || '');
+      if (!allText.toLowerCase().includes(sq)) return;
+    }
+
+    const msgCount = (sess.messages || []).length;
+    const preview = sess.firstMsg || (sess.messages && sess.messages.length > 0 ? (sess.messages[0].content || '').slice(0, 30) : '(无消息)');
+    const sid = 'sess_' + idx;
+
+    html += `<div class="session-card">
+      <div class="session-head" onclick="toggleSession('${sid}')">
+        <div class="sh-left">
+          <span class="sh-date">${eh(sess.date)} ${eh(sess.time)}</span>
+          <span class="sh-count">${msgCount} 条消息</span>
+          <span class="sh-preview" title="${eh(preview)}">${eh(preview)}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();delSession('${eh(uid)}','${eh(sess.id)}')">删除</button>
+          <span class="sh-arrow" id="${sid}_arrow">▼</span>
+        </div>
+      </div>
+      <div class="session-body" id="${sid}_body">
+        ${(sess.messages||[]).map(m => {
+          const roleClass = m.role === 'user' ? 'u' : 'b';
+          const roleLabel = m.role === 'user' ? '用户' : 'AI';
+          return `<div class="session-msg"><span class="sm-role ${roleClass}">${roleLabel}</span><span class="sm-content">${eh(m.content)}</span><span class="sm-time">${eh(m.time||'')}</span></div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+
+  cont.innerHTML = html || '<p style="color:var(--text3);padding:20px 0;">未找到匹配的会话。</p>';
 }
 
-function delUserHist() {
-  const uid = document.getElementById('hu').value;
-  if (!uid) return toast('无选中用户', 'error');
-  if (!confirm('删除用户「'+uid+'」的全部聊天记录？不可恢复。')) return;
-  localStorage.removeItem(CHAT_PREFIX + uid);
-  lh(); toast('已删除', 'success');
+function toggleSession(sid) {
+  const body = document.getElementById(sid + '_body');
+  const arrow = document.getElementById(sid + '_arrow');
+  if (!body || !arrow) return;
+  const open = body.classList.toggle('open');
+  arrow.textContent = open ? '▲' : '▼';
 }
 
-function exCSV() {
+function delSession(uid, sessId) {
+  if (!confirm('删除此会话？不可恢复。')) return;
+  let sessions = getSessionsForUser(uid);
+  sessions = sessions.filter(s => s.id !== sessId);
+  if (sessions.length === 0) {
+    localStorage.removeItem(SESS_PREFIX + uid);
+  } else {
+    s(SESS_PREFIX + uid, sessions);
+  }
+  rh(); toast('已删除', 'success');
+}
+
+function delAllUserSessions() {
   const uid = document.getElementById('hu').value;
   if (!uid) return toast('无选中用户', 'error');
-  const h = g(CHAT_PREFIX + uid) || [];
-  if (!h.length) return toast('无记录', 'error');
-  let csv = '\uFEFF时间,角色,内容\n';
-  h.forEach(m => csv += '"'+(m.time||'')+'","'+(m.role==='user'?'用户':'AI')+'","'+(m.content||'').replace(/"/g,'""')+'"\n');
+  if (!confirm('删除用户「'+uid+'」的全部会话记录？不可恢复。')) return;
+  localStorage.removeItem(SESS_PREFIX + uid);
+  lh(); rh(); toast('已删除全部记录', 'success');
+}
+
+function exUserCSV() {
+  const uid = document.getElementById('hu').value;
+  if (!uid) return toast('无选中用户', 'error');
+  const sessions = getSessionsForUser(uid);
+  if (!sessions.length) return toast('无记录', 'error');
+
+  let csv = '\uFEFF会话日期,会话时间,角色,内容\n';
+  sessions.forEach(sess => {
+    (sess.messages || []).forEach(m => {
+      csv += '"'+(sess.date||'')+'","'+(m.time||'')+'","'+(m.role==='user'?'用户':'AI')+'","'+(m.content||'').replace(/"/g,'""')+'"\n';
+    });
+  });
+
   const b = new Blob([csv], { type:'text/csv;charset=utf-8;' });
   const u = URL.createObjectURL(b);
   const a = document.createElement('a'); a.href=u; a.download='雅千_'+uid+'_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();

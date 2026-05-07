@@ -216,9 +216,20 @@ function sp(name) {
 
 // ═══════ STORAGE ═══════
 const SK = { user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_v4' };
-function chatKey() { const u = g(SK.user); return 'yaqian_chat_' + (u ? u.phone : 'guest'); }
+const SESS_PREFIX = 'yaqian_sessions_';
+function sessionsKey() { const u = g(SK.user); return SESS_PREFIX + (u ? u.phone : 'guest'); }
+function getSessions() { return g(sessionsKey()) || []; }
+function saveSessions(ss) { s(sessionsKey(), ss); }
 function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
 function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+let sessions = getSessions();
+let currentSession = sessions.length > 0 ? sessions[sessions.length-1] : null;
+if (currentSession && currentSession.messages && currentSession.messages.length > 0) {
+  // resume latest session
+} else {
+  currentSession = null;
+}
 
 // ═══════ KNOWLEDGE ═══════
 const KB = {
@@ -238,27 +249,43 @@ const KB = {
   '推荐附近好玩的景点和美食': '🏛 城市博物馆 — 步行10分钟<br>🌳 江滨公园 — 步行5分钟<br>🛍 星光天地 — 步行15分钟<br>🍜 老城美食街 — 打车10分钟<br>🏯 古镇水乡 — 驾车30分钟<br>需要帮您规划路线吗？'
 };
 
-// ═══════ CHAT ═══════
-function getChat() { return g(chatKey()) || []; }
-function saveChat(h) { s(chatKey(), h); }
-let ch = getChat();
+// ═══════ CHAT (sessions) ═══════
+function startSessionIfNeeded() {
+  if (!currentSession) {
+    const t = new Date();
+    currentSession = {
+      id: 'sess_' + t.getTime(),
+      date: t.toISOString().slice(0,10),
+      time: t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0'),
+      firstMsg: '',
+      messages: []
+    };
+    sessions.push(currentSession);
+    saveSessions(sessions);
+  }
+}
+function getCurrentMessages() { return currentSession ? currentSession.messages : []; }
 function rc() {
+  const msgs = getCurrentMessages();
   const c = document.getElementById('chatMsgs');
-  if (ch.length === 0) {
+  if (msgs.length === 0) {
     c.innerHTML = '<div class="msg bot"><div class="av">A</div><div><div class="bub">您好！我是雅千AI管家 <b>Alice</b> 👋<br><br>🛏 客房 · 💆 SPA · 🏊 泳池<br>🍳 早餐 · 🗺️ 周边 · 🚗 接送<br><br>请问有什么可以帮您？</div></div></div>';
     return;
   }
-  c.innerHTML = ch.map(m => {
+  c.innerHTML = msgs.map(m => {
     const u = m.role === 'user';
     return `<div class="msg ${u?'user':'bot'}"><div class="av">${u?'客':'A'}</div><div><div class="bub">${m.content}</div><div class="t">${m.time||''}</div></div></div>`;
   }).join('');
   c.scrollTop = c.scrollHeight;
 }
 function am(role, content) {
+  startSessionIfNeeded();
   const t = new Date();
-  ch.push({ role, content, time: t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0'), ts: t.getTime() });
-  if (ch.length > 200) ch = ch.slice(-200);
-  saveChat(ch); rc();
+  const msg = { role, content, time: t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0'), ts: t.getTime() };
+  currentSession.messages.push(msg);
+  if (!currentSession.firstMsg && role === 'user') currentSession.firstMsg = content.slice(0, 40);
+  if (currentSession.messages.length > 500) currentSession.messages = currentSession.messages.slice(-500);
+  saveSessions(sessions); rc();
 }
 function qs(msg) { document.getElementById('ci').value = msg; sm(); }
 async function sm() {
@@ -291,18 +318,22 @@ async function sm() {
 
   // 3. Knowledge base
   await slp(300+Math.random()*500);
-  am('bot', findKB(text));
+  const kbr = findKB(text);
+  if (kbr) { am('bot', kbr); btn.disabled = false; return; }
+  // Final fallback
+  am('bot', `关于「${text.length>20?text.slice(0,20)+'...':text}」，如需即时帮助请拨打 <b>021-8888-6666</b>。或告诉我更具体的问题～`);
   btn.disabled = false;
 }
 function findKB(text) {
   for (const [k, v] of Object.entries(KB)) { if (text === k || text.includes(k)) return v; }
   const map = { 'WiFi|wifi|无线|网络': 'WiFi密码是什么', '早餐|吃饭|餐厅|早饭': '早餐时间和地点', '泳池|游泳': '游泳池开放时间', '停车': '停车服务怎么收费', 'SPA|spa|水疗|按摩': 'SPA馆有什么项目', '健身|运动|锻炼': '健身房怎么使用', '发票': '怎么开发票', '退房|退宿': '退房时间是几点', '接送|机场|车站|接机': '机场接送怎么预约', '前台|电话': '前台电话是多少', '预订|订房|房型': '我想预订房间', '续住|延长': '我要续住', '周边|附近|景点|美食|好玩': '推荐附近好玩的景点和美食' };
   for (const [pat, key] of Object.entries(map)) { if (new RegExp(pat, 'i').test(text)) return KB[key]; }
-  return `关于「${text.length>20?text.slice(0,20)+'...':text}」，如需即时帮助请拨打 <b>021-8888-6666</b>。或告诉我更具体的问题～`;
+  return null;
 }
 async function callDS(msg, cfg) {
+  const msgs = getCurrentMessages();
   const ms = [{ role: 'system', content: cfg.systemPrompt || '你是雅千酒店AI管家Alice。' },
-    ...ch.slice(-8).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content.replace(/<[^>]+>/g, '') })),
+    ...msgs.slice(-8).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content.replace(/<[^>]+>/g, '') })),
     { role: 'user', content: msg }];
   const r = await fetch('https://api.deepseek.com/v1/chat/completions', {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.apiKey },
@@ -340,9 +371,15 @@ function dologin() {
   if (!u) return tst('未注册', 'error');
   if (u.password !== w) return tst('密码错误', 'error');
   tst('登录成功！', 'success'); su(u);
+  // switch user: save previous session, start fresh
+  currentSession = null;
+  sessions = getSessions();
+  currentSession = sessions.length > 0 ? sessions[sessions.length-1] : null;
+  if (currentSession && (!currentSession.messages || currentSession.messages.length === 0)) currentSession = null;
+  rc();
 }
 function su(u) { cu = { name: u.name, phone: u.phone, orders: u.orders, points: u.points }; s(SK.user, cu); up(); }
-function dologout() { cu = null; localStorage.removeItem(SK.user); ch = getChat(); up(); rc(); }
+function dologout() { cu = null; localStorage.removeItem(SK.user); currentSession = null; sessions = getSessions(); currentSession = sessions.length > 0 ? sessions[sessions.length-1] : null; up(); rc(); }
 function up() {
   if (cu) {
     document.getElementById('authForm').style.display = 'none';
