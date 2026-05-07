@@ -175,16 +175,17 @@ const KEYS = { exp: 'yaqian_experiment_v2', ds: 'yaqian_deepseek_cfg', chat: 'ya
 
 const DEF_EXP = {
   enabled: false,
+  activeGroup: 'g1',
   groups: [
-    { id: 'g1', name: '组1', mode: 'affinity', triggers: [
-      { userMsg: '', selfReply: '', affinityReply: '' },
-      { userMsg: '', selfReply: '', affinityReply: '' },
-      { userMsg: '', selfReply: '', affinityReply: '' }
+    { id: 'g1', name: '组1', mode: 'self-deprecating', triggers: [
+      { userMsg: '', reply: '' },
+      { userMsg: '', reply: '' },
+      { userMsg: '', reply: '' }
     ]},
     { id: 'g2', name: '组2', mode: 'affinity', triggers: [
-      { userMsg: '', selfReply: '', affinityReply: '' },
-      { userMsg: '', selfReply: '', affinityReply: '' },
-      { userMsg: '', selfReply: '', affinityReply: '' }
+      { userMsg: '', reply: '' },
+      { userMsg: '', reply: '' },
+      { userMsg: '', reply: '' }
     ]}
   ]
 };
@@ -227,20 +228,29 @@ function re(cfg) {
   const c = document.getElementById('expGroups');
   const groups = (cfg && cfg.groups) ? cfg.groups : JSON.parse(JSON.stringify(DEF_EXP)).groups;
   if (!groups || groups.length === 0) { c.innerHTML = '<p style="color:var(--text3);padding:12px 0;">暂无实验组，点击下方「新增组别」开始设置。</p>'; return; }
-  c.innerHTML = groups.map((g, gi) => `
+
+  // Active group selector
+  const activeId = cfg.activeGroup || (groups[0] ? groups[0].id : '');
+  let html = '<div class="fg" style="margin-bottom:16px;"><label>当前激活的组别（前台匹配此组的触发词）</label><select id="activeGroup" style="width:100%;">';
+  groups.forEach((g, i) => {
+    html += `<option value="${eh(g.id)}" ${g.id===activeId?'selected':''}>📁 ${eh(g.name)} — ${g.mode==='self-deprecating'?'😭 自嘲式':'😊 亲和式'}</option>`;
+  });
+  html += '</select></div><hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">';
+
+  html += groups.map((g, gi) => `
     <div class="group-card">
       <div class="gh">
         <span class="gt">📁 ${eh(g.name||'未命名')}</span>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span class="gm">${g.mode==='self-deprecating'?'😭 自嘲式':'😊 亲和式'}</span>
+          <span class="gm">${g.mode==='self-deprecating'?'😭 自嘲式幽默':'😊 亲和式幽默'}</span>
           <button class="btn btn-danger btn-sm" onclick="dg(${gi})">删除组</button>
         </div>
       </div>
       <div class="fg-row" style="margin-bottom:10px;">
         <div class="fg"><label>组名称</label><input type="text" value="${eh(g.name)}" class="gn" placeholder="组名称"></div>
-        <div class="fg"><label>幽默风格</label><select class="gmode">
-          <option value="affinity" ${g.mode==='affinity'?'selected':''}>😊 亲和式幽默</option>
+        <div class="fg"><label>风格</label><select class="gmode">
           <option value="self-deprecating" ${g.mode==='self-deprecating'?'selected':''}>😭 自嘲式幽默</option>
+          <option value="affinity" ${g.mode==='affinity'?'selected':''}>😊 亲和式幽默</option>
         </select></div>
       </div>
       <div class="triggers-wrap">
@@ -248,10 +258,7 @@ function re(cfg) {
           <div class="trigger-block">
             <div class="tn">触发 #${ti+1}</div>
             <div class="fg"><label>用户触发词</label><input type="text" value="${eh(tr.userMsg||'')}" class="tmsg" placeholder="匹配包含此内容的用户消息"></div>
-            <div class="fg-row">
-              <div class="fg"><label>😭 自嘲式回复</label><textarea class="tself" placeholder="自嘲式幽默的回复...">${eh(tr.selfReply||'')}</textarea></div>
-              <div class="fg"><label>😊 亲和式回复</label><textarea class="taff" placeholder="亲和式幽默的回复...">${eh(tr.affinityReply||'')}</textarea></div>
-            </div>
+            <div class="fg"><label>AI回复</label><textarea class="treply" placeholder="触发后AI的回复内容...">${eh(tr.reply||'')}</textarea></div>
             <button class="btn btn-danger btn-sm" onclick="dt(${gi},${ti})">删除此触发</button>
           </div>
         `).join('')}
@@ -262,8 +269,9 @@ function re(cfg) {
 }
 function addGroup() {
   const cfg = g(KEYS.exp) || DEF_EXP;
-  cfg.groups.push({ id: 'g'+Date.now(), name: '新组', mode: 'affinity', triggers: [{ userMsg:'',selfReply:'',affinityReply:'' }] });
-  s(KEYS.exp, cfg); re(cfg); toast('已添加新组', 'success');
+  const n = cfg.groups.length + 1;
+  cfg.groups.push({ id: 'g'+Date.now(), name: '组'+n, mode: 'self-deprecating', triggers: [{ userMsg:'',reply:'' }] });
+  s(KEYS.exp, cfg); re(cfg); toast('已添加组'+n, 'success');
 }
 function dg(gi) {
   if (!confirm('删除这个组？')) return;
@@ -272,7 +280,7 @@ function dg(gi) {
 }
 function at(gi) {
   const cfg = g(KEYS.exp) || DEF_EXP;
-  cfg.groups[gi].triggers.push({ userMsg:'',selfReply:'',affinityReply:'' });
+  cfg.groups[gi].triggers.push({ userMsg:'',reply:'' });
   s(KEYS.exp, cfg); re(cfg);
 }
 function dt(gi, ti) {
@@ -280,17 +288,16 @@ function dt(gi, ti) {
   cfg.groups[gi].triggers.splice(ti, 1); s(KEYS.exp, cfg); re(cfg);
 }
 function saveExp() {
-  const cfg = { enabled: document.getElementById('expOn').checked, groups: [] };
+  const cfg = { enabled: document.getElementById('expOn').checked, activeGroup: document.getElementById('activeGroup')?.value || 'g1', groups: [] };
   document.querySelectorAll('.group-card').forEach(gc => {
     const triggers = [];
     gc.querySelectorAll('.trigger-block').forEach(tb => {
       const m = tb.querySelector('.tmsg')?.value?.trim()||'';
-      const sf = tb.querySelector('.tself')?.value?.trim()||'';
-      const af = tb.querySelector('.taff')?.value?.trim()||'';
-      if (m) triggers.push({ userMsg:m, selfReply:sf, affinityReply:af });
+      const r = tb.querySelector('.treply')?.value?.trim()||'';
+      if (m) triggers.push({ userMsg:m, reply:r });
     });
     const name = gc.querySelector('.gn')?.value?.trim()||'未命名';
-    const mode = gc.querySelector('.gmode')?.value||'affinity';
+    const mode = gc.querySelector('.gmode')?.value||'self-deprecating';
     cfg.groups.push({ id:'g'+Date.now()+Math.random(), name, mode, triggers });
   });
   s(KEYS.exp, cfg); re(cfg);

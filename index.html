@@ -267,11 +267,11 @@ async function sm() {
   // 1. Experiment (highest priority when enabled)
   const ec = g(SK.exp);
   if (ec && ec.enabled && ec.groups) {
-    for (const grp of ec.groups) {
-      for (const tr of (grp.triggers || [])) {
+    const ag = ec.groups.find(grp => grp.id === ec.activeGroup);
+    if (ag && ag.triggers) {
+      for (const tr of ag.triggers) {
         if (tr.userMsg && text.includes(tr.userMsg)) {
-          const reply = grp.mode === 'self-deprecating' ? tr.selfReply : tr.affinityReply;
-          if (reply) { await slp(500+Math.random()*500); am('bot', reply); btn.disabled = false; return; }
+          if (tr.reply) { await slp(500+Math.random()*500); am('bot', tr.reply); btn.disabled = false; return; }
         }
       }
     }
