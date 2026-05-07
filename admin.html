@@ -209,7 +209,8 @@ document.querySelectorAll('.sidebar nav a[data-section]').forEach(a => {
 
 // ═══ EXPERIMENT ═══
 function le() {
-  const cfg = g(KEYS.exp) || DEF_EXP;
+  let cfg = g(KEYS.exp);
+  if (!cfg || !cfg.groups || cfg.groups.length === 0) { cfg = JSON.parse(JSON.stringify(DEF_EXP)); s(KEYS.exp, cfg); }
   document.getElementById('expOn').checked = cfg.enabled;
   ue();
   re(cfg);
@@ -224,7 +225,8 @@ function ue() {
 function te() { ue(); }
 function re(cfg) {
   const c = document.getElementById('expGroups');
-  const groups = (cfg || g(KEYS.exp) || DEF_EXP).groups || [];
+  const groups = (cfg && cfg.groups) ? cfg.groups : JSON.parse(JSON.stringify(DEF_EXP)).groups;
+  if (!groups || groups.length === 0) { c.innerHTML = '<p style="color:var(--text3);padding:12px 0;">暂无实验组，点击下方「新增组别」开始设置。</p>'; return; }
   c.innerHTML = groups.map((g, gi) => `
     <div class="group-card">
       <div class="gh">
