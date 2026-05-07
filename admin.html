@@ -266,6 +266,7 @@ function re(cfg) {
       <button class="btn btn-outline btn-sm" onclick="at(${gi})" style="margin-top:6px;">＋ 新增触发词</button>
     </div>
   `).join('');
+  c.innerHTML = html;
 }
 function addGroup() {
   const cfg = g(KEYS.exp) || DEF_EXP;
