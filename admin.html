@@ -17,33 +17,25 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .shell { display: flex; min-height: 100vh; }
 .sidebar { width: 200px; background: var(--primary); color: #fff; flex-shrink: 0; padding: 20px 0; }
 .sidebar .logo { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 12px; }
-.sidebar .logo h1 { font-size: 15px; }
-.sidebar .logo span { font-size: 11px; color: var(--gold); }
+.sidebar .logo h1 { font-size: 15px; } .sidebar .logo span { font-size: 11px; color: var(--gold); }
 .sidebar nav a { display: flex; align-items: center; gap: 8px; padding: 11px 20px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; border-left: 3px solid transparent; }
 .sidebar nav a:hover, .sidebar nav a.active { color: #fff; background: rgba(255,255,255,0.06); border-left-color: var(--gold); }
 .main { flex: 1; padding: 24px 28px; overflow-y: auto; max-height: 100vh; }
-.main section { display: none; }
-.main section.active { display: block; }
+.main section { display: none; } .main section.active { display: block; }
 
 .card { background: var(--card); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-.card h2 { font-size: 17px; margin-bottom: 6px; }
-.card .desc { font-size: 12px; color: var(--text3); margin-bottom: 20px; line-height: 1.6; }
+.card h2 { font-size: 17px; margin-bottom: 6px; } .card .desc { font-size: 12px; color: var(--text3); margin-bottom: 20px; line-height: 1.6; }
 
 .fg { margin-bottom: 12px; }
 .fg label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 3px; font-weight: 500; }
 .fg input, .fg textarea, .fg select { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font); outline: none; }
 .fg textarea { resize: vertical; min-height: 55px; line-height: 1.6; }
 .fg input:focus, .fg textarea:focus, .fg select:focus { border-color: var(--gold); }
-.fg .hint { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.fg-row { display: flex; gap: 10px; }
-.fg-row > * { flex: 1; }
 
 .btn { padding: 9px 18px; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-success { background: var(--success); color: #fff; }
+.btn-primary { background: var(--primary); color: #fff; } .btn-success { background: var(--success); color: #fff; }
 .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
 .btn-danger { color: var(--error); background: #fff; border: 1px solid var(--error); }
-.btn-danger:hover { background: #fef2f2; }
 .btn-sm { padding: 4px 10px; font-size: 11px; }
 .btn-group { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 
@@ -57,14 +49,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 .toggle-label { font-size: 13px; font-weight: 500; }
 
 .badge { display: inline-block; padding: 3px 9px; border-radius: 16px; font-size: 11px; font-weight: 600; }
-.badge-success { background: #e8f5e9; color: var(--success); }
-.badge-warning { background: #fff8e1; color: #f57c00; }
+.badge-success { background: #e8f5e9; color: var(--success); } .badge-warning { background: #fff8e1; color: #f57c00; }
 .badge-error { background: #ffebee; color: var(--error); }
 
-.group-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; background: #fdfcf9; }
-.group-card .gh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.group-card .gt { font-size: 14px; font-weight: 700; }
-.group-card .gm { font-size: 11px; background: var(--gold-light); color: var(--primary); padding: 2px 8px; border-radius: 10px; }
 .trigger-block { border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px; background: #fff; }
 .trigger-block .tn { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
 .trigger-block textarea { min-height: 48px; font-size: 12px; }
@@ -75,13 +62,11 @@ table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th { text-align: left; padding: 9px 10px; background: #f9f8f5; border-bottom: 2px solid var(--border); font-size: 11px; color: var(--text3); font-weight: 600; }
 td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
 .role-tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; }
-.role-tag.user { background: var(--primary); color: #fff; }
-.role-tag.bot { background: var(--gold-light); color: var(--primary); }
+.role-tag.user { background: var(--primary); color: #fff; } .role-tag.bot { background: var(--gold-light); color: var(--primary); }
 .msg-cell { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .toast { position: fixed; top: 14px; right: 14px; padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; color: #fff; z-index: 1000; animation: si 0.3s ease; }
-.toast.success { background: var(--success); }
-.toast.error { background: var(--error); }
+.toast.success { background: var(--success); } .toast.error { background: var(--error); }
 @keyframes si { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 .http-status { font-family: monospace; font-size: 11px; margin-top: 8px; padding: 8px; background: #f9f8f5; border-radius: var(--radius-sm); word-break: break-all; }
 </style>
@@ -103,7 +88,7 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
     <section id="section-experiment" class="active">
       <div class="card">
         <h2>🧪 实验设置</h2>
-        <p class="desc">开启后，AI管家匹配到触发词时使用对应组别的预设回复（<b>优先级高于DeepSeek</b>）。关闭后所有实验预设不生效。</p>
+        <p class="desc">开启后，选中一个组别，前台匹配到该组的触发词时使用预设回复（<b>优先级高于DeepSeek</b>）。关闭后不触发。</p>
 
         <div class="toggle-row">
           <label class="toggle"><input type="checkbox" id="expOn" onchange="te()"><span class="slider"></span></label>
@@ -113,8 +98,11 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
 
         <div id="expContent">
           <div id="expGroups"></div>
-          <div class="btn-group">
+          <div class="btn-group" style="margin-top:8px;">
             <button class="btn btn-outline" onclick="addGroup()">＋ 新增组别</button>
+            <button class="btn btn-outline btn-sm" onclick="delActiveGroup()" style="margin-left:auto;">🗑 删除当前组</button>
+          </div>
+          <div class="btn-group" style="margin-top:4px;">
             <button class="btn btn-success" onclick="saveExp()">💾 保存全部</button>
             <button class="btn btn-outline" onclick="resetExp()">恢复默认</button>
           </div>
@@ -127,22 +115,15 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
       <div class="card">
         <h2>🤖 DeepSeek API</h2>
         <p class="desc">实验未命中时调用DeepSeek作为兜底。API不可用时回落至内置知识库。</p>
-
         <div class="toggle-row">
           <label class="toggle"><input type="checkbox" id="dsOn" onchange="tds()"><span class="slider"></span></label>
           <span class="toggle-label">启用 DeepSeek</span>
           <span id="dsBadge" class="badge badge-warning">未启用</span>
         </div>
-
         <div class="fg"><label>API Key</label><input type="password" id="dsKey" placeholder="sk-..."><div class="hint"><a href="https://platform.deepseek.com/api_keys" target="_blank">获取 Key</a></div></div>
         <div class="fg"><label>模型</label><select id="dsModel"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select></div>
         <div class="fg"><label>System Prompt</label><textarea id="dsPrompt" rows="3"></textarea></div>
-
-        <div class="btn-group">
-          <button class="btn btn-primary" onclick="saveDS()">💾 保存</button>
-          <button class="btn btn-outline" onclick="testDS()">🧪 测试</button>
-          <button class="btn btn-outline" onclick="resetDS()">恢复默认</button>
-        </div>
+        <div class="btn-group"><button class="btn btn-primary" onclick="saveDS()">💾 保存</button><button class="btn btn-outline" onclick="testDS()">🧪 测试</button><button class="btn btn-outline" onclick="resetDS()">恢复默认</button></div>
         <div id="dsResult" style="margin-top:12px;"></div>
       </div>
     </section>
@@ -151,19 +132,17 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
     <section id="section-history">
       <div class="card">
         <h2>📋 聊天记录</h2>
-        <p class="desc">查看、导出、删除聊天记录。</p>
+        <p class="desc">按用户查看聊天记录。每个用户的聊天独立保存。</p>
         <div class="fg-row" style="margin-bottom:14px;">
+          <div class="fg"><label>用户</label><select id="hu" onchange="rh()"><option value="">加载中...</option></select></div>
           <div class="fg"><label>角色</label><select id="hf" onchange="rh()"><option value="all">全部</option><option value="user">用户</option><option value="bot">AI</option></select></div>
           <div class="fg"><label>搜索</label><input type="text" id="hs" placeholder="搜索内容..." oninput="rh()"></div>
         </div>
         <div class="btn-group" style="margin-bottom:14px;">
-          <button class="btn btn-outline btn-sm" onclick="sa()">全选</button>
-          <button class="btn btn-outline btn-sm" onclick="da()">取消</button>
-          <button class="btn btn-outline btn-sm" onclick="exCSV()">📥 CSV</button>
-          <button class="btn btn-danger btn-sm" onclick="dsel()">🗑 删选中</button>
-          <button class="btn btn-danger btn-sm" onclick="cAll()">🗑 清空</button>
+          <button class="btn btn-danger btn-sm" onclick="delUserHist()">🗑 删除此用户记录</button>
+          <button class="btn btn-outline btn-sm" onclick="exCSV()">📥 导出CSV</button>
         </div>
-        <table><thead><tr><th><input type="checkbox" id="selAll" onchange="ta()"></th><th>时间</th><th>角色</th><th>内容</th></tr></thead><tbody id="htb"></tbody></table>
+        <table><thead><tr><th>时间</th><th>角色</th><th>内容</th></tr></thead><tbody id="htb"></tbody></table>
         <div id="he" style="text-align:center;padding:30px;color:var(--text3);display:none;">暂无记录</div>
       </div>
     </section>
@@ -171,26 +150,23 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
 </div>
 
 <script>
-const KEYS = { exp: 'yaqian_exp_x7k2m', ds: 'yaqian_deepseek_cfg', chat: 'yaqian_chat_history' };
+const KEYS = { exp: 'yaqian_exp_v4', ds: 'yaqian_deepseek_cfg' };
+const CHAT_PREFIX = 'yaqian_chat_';
 
 const DEF_EXP = {
   enabled: false,
   activeGroup: 'g1',
   groups: [
-    { id: 'g1', name: '组1', mode: 'self-deprecating', triggers: [
-      { userMsg: '', reply: '' },
-      { userMsg: '', reply: '' },
-      { userMsg: '', reply: '' }
+    { id: 'g1', name: '组1', triggers: [
+      { userMsg: '', reply: '' }, { userMsg: '', reply: '' }, { userMsg: '', reply: '' }
     ]},
-    { id: 'g2', name: '组2', mode: 'affinity', triggers: [
-      { userMsg: '', reply: '' },
-      { userMsg: '', reply: '' },
-      { userMsg: '', reply: '' }
+    { id: 'g2', name: '组2', triggers: [
+      { userMsg: '', reply: '' }, { userMsg: '', reply: '' }, { userMsg: '', reply: '' }
     ]}
   ]
 };
 
-const DEF_DS = { enabled: false, apiKey: '', model: 'deepseek-chat', systemPrompt: '你是雅千酒店AI管家Alice，热情专业带一点幽默感。请用中文回复，简洁友好。' };
+const DEF_DS = { enabled: false, apiKey: '', model: 'deepseek-chat', systemPrompt: '你是雅千酒店AI管家Alice，热情专业，请用中文回复。' };
 
 function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
 function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
@@ -204,7 +180,7 @@ document.querySelectorAll('.sidebar nav a[data-section]').forEach(a => {
     this.classList.add('active');
     document.querySelectorAll('.main section').forEach(x => x.classList.remove('active'));
     document.getElementById('section-' + this.dataset.section).classList.add('active');
-    if (this.dataset.section === 'history') rh();
+    if (this.dataset.section === 'history') lh();
   });
 });
 
@@ -224,86 +200,110 @@ function ue() {
   document.getElementById('expContent').className = on ? '' : 'disabled-section';
 }
 function te() { ue(); }
+
 function re(cfg) {
   const c = document.getElementById('expGroups');
   const groups = (cfg && cfg.groups) ? cfg.groups : JSON.parse(JSON.stringify(DEF_EXP)).groups;
-  if (!groups || groups.length === 0) { c.innerHTML = '<p style="color:var(--text3);padding:12px 0;">暂无实验组，点击下方「新增组别」开始设置。</p>'; return; }
+  if (!groups || groups.length === 0) { c.innerHTML = '<p style="color:var(--text3);padding:12px 0;">暂无实验组，点击下方「新增组别」。</p>'; return; }
 
-  // Active group selector
-  const activeId = cfg.activeGroup || (groups[0] ? groups[0].id : '');
-  let html = '<div class="fg" style="margin-bottom:16px;"><label>当前激活的组别（前台匹配此组的触发词）</label><select id="activeGroup" style="width:100%;">';
+  const activeId = cfg.activeGroup || groups[0].id;
+  const activeGroup = groups.find(g => g.id === activeId) || groups[0];
+
+  let html = '<div class="fg" style="margin-bottom:16px;"><label>当前组别</label><select id="activeGroup" style="width:100%;" onchange="switchGroup()">';
   groups.forEach((g, i) => {
-    html += `<option value="${eh(g.id)}" ${g.id===activeId?'selected':''}>📁 ${eh(g.name)} — ${g.mode==='self-deprecating'?'😭 自嘲式':'😊 亲和式'}</option>`;
+    html += `<option value="${eh(g.id)}" ${g.id===activeId?'selected':''}>📁 ${eh(g.name)}</option>`;
   });
-  html += '</select></div><hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">';
+  html += '</select></div>';
+  html += '<div class="fg"><label>组名称</label><input type="text" id="groupName" value="'+eh(activeGroup.name)+'" placeholder="组名称"></div>';
 
-  html += groups.map((g, gi) => `
-    <div class="group-card">
-      <div class="gh">
-        <span class="gt">📁 ${eh(g.name||'未命名')}</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="gm">${g.mode==='self-deprecating'?'😭 自嘲式幽默':'😊 亲和式幽默'}</span>
-          <button class="btn btn-danger btn-sm" onclick="dg(${gi})">删除组</button>
-        </div>
-      </div>
-      <div class="fg-row" style="margin-bottom:10px;">
-        <div class="fg"><label>组名称</label><input type="text" value="${eh(g.name)}" class="gn" placeholder="组名称"></div>
-        <div class="fg"><label>风格</label><select class="gmode">
-          <option value="self-deprecating" ${g.mode==='self-deprecating'?'selected':''}>😭 自嘲式幽默</option>
-          <option value="affinity" ${g.mode==='affinity'?'selected':''}>😊 亲和式幽默</option>
-        </select></div>
-      </div>
-      <div class="triggers-wrap">
-        ${(g.triggers||[]).map((tr, ti) => `
-          <div class="trigger-block">
-            <div class="tn">触发 #${ti+1}</div>
-            <div class="fg"><label>用户触发词</label><input type="text" value="${eh(tr.userMsg||'')}" class="tmsg" placeholder="匹配包含此内容的用户消息"></div>
-            <div class="fg"><label>AI回复</label><textarea class="treply" placeholder="触发后AI的回复内容...">${eh(tr.reply||'')}</textarea></div>
-            <button class="btn btn-danger btn-sm" onclick="dt(${gi},${ti})">删除此触发</button>
-          </div>
-        `).join('')}
-      </div>
-      <button class="btn btn-outline btn-sm" onclick="at(${gi})" style="margin-top:6px;">＋ 新增触发词</button>
-    </div>
-  `).join('');
+  html += '<hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">';
+  html += '<div style="font-size:13px;font-weight:600;margin-bottom:10px;">触发词与回复</div>';
+
+  (activeGroup.triggers || []).forEach((tr, ti) => {
+    html += `<div class="trigger-block">
+      <div class="tn">触发 #${ti+1}</div>
+      <div class="fg"><label>用户触发词</label><input type="text" value="${eh(tr.userMsg||'')}" class="tmsg" placeholder="匹配包含此内容的用户消息"></div>
+      <div class="fg"><label>AI回复</label><textarea class="treply" placeholder="触发后AI的回复内容...">${eh(tr.reply||'')}</textarea></div>
+      <button class="btn btn-danger btn-sm" onclick="dt(${ti})">删除此触发</button>
+    </div>`;
+  });
+
+  html += `<button class="btn btn-outline btn-sm" onclick="at()" style="margin-top:6px;">＋ 新增触发词</button>`;
   c.innerHTML = html;
 }
+
+function switchGroup() {
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  const newId = document.getElementById('activeGroup').value;
+  // Save current group's edits to cfg first
+  syncActiveGroupEdits(cfg);
+  cfg.activeGroup = newId;
+  s(KEYS.exp, cfg);
+  re(cfg);
+}
+
+function syncActiveGroupEdits(cfg) {
+  const activeId = cfg.activeGroup;
+  const ag = cfg.groups.find(g => g.id === activeId);
+  if (!ag) return;
+  const nameEl = document.getElementById('groupName');
+  if (nameEl) ag.name = nameEl.value.trim() || ag.name;
+  const triggers = [];
+  document.querySelectorAll('.trigger-block').forEach(tb => {
+    const m = tb.querySelector('.tmsg')?.value?.trim()||'';
+    const r = tb.querySelector('.treply')?.value?.trim()||'';
+    if (m) triggers.push({ userMsg: m, reply: r });
+  });
+  ag.triggers = triggers;
+}
+
 function addGroup() {
   const cfg = g(KEYS.exp) || DEF_EXP;
   const n = cfg.groups.length + 1;
-  cfg.groups.push({ id: 'g'+Date.now(), name: '组'+n, mode: 'self-deprecating', triggers: [{ userMsg:'',reply:'' }] });
-  s(KEYS.exp, cfg); re(cfg); toast('已添加组'+n, 'success');
+  const newId = 'g' + Date.now();
+  cfg.groups.push({ id: newId, name: '组'+n, triggers: [{ userMsg:'', reply:'' }] });
+  cfg.activeGroup = newId;
+  s(KEYS.exp, cfg); re(cfg);
+  toast('已添加组'+n, 'success');
 }
-function dg(gi) {
-  if (!confirm('删除这个组？')) return;
+
+function delActiveGroup() {
   const cfg = g(KEYS.exp) || DEF_EXP;
-  cfg.groups.splice(gi, 1); s(KEYS.exp, cfg); re(cfg);
+  if (cfg.groups.length <= 1) return toast('至少保留一个组别', 'error');
+  if (!confirm('删除当前组？')) return;
+  const idx = cfg.groups.findIndex(g => g.id === cfg.activeGroup);
+  cfg.groups.splice(idx, 1);
+  cfg.activeGroup = cfg.groups[0].id;
+  s(KEYS.exp, cfg); re(cfg);
+  toast('已删除', 'success');
 }
-function at(gi) {
+
+function at() {
   const cfg = g(KEYS.exp) || DEF_EXP;
-  cfg.groups[gi].triggers.push({ userMsg:'',reply:'' });
+  const ag = cfg.groups.find(g => g.id === cfg.activeGroup);
+  if (!ag) return;
+  syncActiveGroupEdits(cfg);
+  ag.triggers.push({ userMsg:'', reply:'' });
   s(KEYS.exp, cfg); re(cfg);
 }
-function dt(gi, ti) {
+
+function dt(ti) {
   const cfg = g(KEYS.exp) || DEF_EXP;
-  cfg.groups[gi].triggers.splice(ti, 1); s(KEYS.exp, cfg); re(cfg);
+  const ag = cfg.groups.find(g => g.id === cfg.activeGroup);
+  if (!ag) return;
+  syncActiveGroupEdits(cfg);
+  ag.triggers.splice(ti, 1);
+  s(KEYS.exp, cfg); re(cfg);
 }
+
 function saveExp() {
-  const cfg = { enabled: document.getElementById('expOn').checked, activeGroup: document.getElementById('activeGroup')?.value || 'g1', groups: [] };
-  document.querySelectorAll('.group-card').forEach(gc => {
-    const triggers = [];
-    gc.querySelectorAll('.trigger-block').forEach(tb => {
-      const m = tb.querySelector('.tmsg')?.value?.trim()||'';
-      const r = tb.querySelector('.treply')?.value?.trim()||'';
-      if (m) triggers.push({ userMsg:m, reply:r });
-    });
-    const name = gc.querySelector('.gn')?.value?.trim()||'未命名';
-    const mode = gc.querySelector('.gmode')?.value||'self-deprecating';
-    cfg.groups.push({ id:'g'+Date.now()+Math.random(), name, mode, triggers });
-  });
-  s(KEYS.exp, cfg); re(cfg);
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  syncActiveGroupEdits(cfg);
+  cfg.enabled = document.getElementById('expOn').checked;
+  s(KEYS.exp, cfg);
   toast('已保存！前台数秒内自动刷新。', 'success');
 }
+
 function resetExp() {
   if (!confirm('恢复默认？当前内容将被覆盖。')) return;
   s(KEYS.exp, JSON.parse(JSON.stringify(DEF_EXP))); le();
@@ -353,50 +353,73 @@ async function testDS() {
     });
     if (r.ok) {
       const d = await r.json();
-      div.innerHTML = `<span class="badge badge-success">✅ 成功</span><div class="http-status">${eh(d.choices?.[0]?.message?.content||'')}</div>`;
+      div.innerHTML = '<span class="badge badge-success">✅ 成功</span><div class="http-status">'+eh(d.choices?.[0]?.message?.content||'')+'</div>';
       toast('连接成功！', 'success');
     } else {
       const e = await r.text();
-      div.innerHTML = `<span class="badge badge-error">❌ 失败 (${r.status})</span><div class="http-status">${eh(e.slice(0,200))}</div>`;
+      div.innerHTML = '<span class="badge badge-error">❌ 失败 ('+r.status+')</span><div class="http-status">'+eh(e.slice(0,200))+'</div>';
     }
-  } catch(e) { div.innerHTML = `<span class="badge badge-error">❌ 网络错误</span><div class="http-status">${eh(e.message)}</div>`; }
+  } catch(e) { div.innerHTML = '<span class="badge badge-error">❌ 网络错误</span><div class="http-status">'+eh(e.message)+'</div>'; }
 }
 
-// ═══ HISTORY ═══
-let sh = new Set();
+// ═══ HISTORY (per-user) ═══
+function getUserKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(CHAT_PREFIX)) keys.push(k.replace(CHAT_PREFIX, ''));
+  }
+  return keys;
+}
+
+function lh() {
+  const sel = document.getElementById('hu');
+  const users = getUserKeys();
+  sel.innerHTML = users.length ? users.map(u => `<option value="${eh(u)}">${eh(u)}</option>`).join('') : '<option value="">无记录</option>';
+  rh();
+}
+
 function rh() {
-  const hist = g(KEYS.chat)||[];
+  const uid = document.getElementById('hu').value;
+  if (!uid) { document.getElementById('htb').innerHTML=''; document.getElementById('he').style.display='block'; return; }
+  const hist = g(CHAT_PREFIX + uid) || [];
   const f = document.getElementById('hf').value;
   const s = (document.getElementById('hs').value||'').toLowerCase();
-  const tbody = document.getElementById('htb');
-  const empty = document.getElementById('he');
   let fl = hist;
   if (f!=='all') fl = fl.filter(m => m.role===f);
   if (s) fl = fl.filter(m => (m.content||'').toLowerCase().includes(s));
+  const tbody = document.getElementById('htb');
+  const empty = document.getElementById('he');
   if (!fl.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display='none';
-  tbody.innerHTML = fl.map(m => {
-    const ri = hist.indexOf(m);
-    return `<tr>
-      <td><input type="checkbox" ${sh.has(ri)?'checked':''} onchange="th(${ri},this.checked)"></td>
-      <td>${m.time||'-'}</td>
-      <td><span class="role-tag ${m.role}">${m.role==='user'?'住客':'AI'}</span></td>
-      <td><div class="msg-cell" title="${eh(m.content)}">${eh(m.content)}</div></td>
-    </tr>`;
-  }).join('');
+  tbody.innerHTML = fl.map(m => `<tr><td>${m.time||'-'}</td><td><span class="role-tag ${m.role}">${m.role==='user'?'用户':'AI'}</span></td><td><div class="msg-cell" title="${eh(m.content)}">${eh(m.content)}</div></td></tr>`).join('');
 }
-function th(i, c) { c?sh.add(i):sh.delete(i); }
-function ta() { const hist=g(KEYS.chat)||[]; sh.clear(); if(document.getElementById('selAll').checked) hist.forEach((_,i)=>sh.add(i)); rh(); }
-function sa() { document.getElementById('selAll').checked=true; ta(); }
-function da() { document.getElementById('selAll').checked=false; sh.clear(); rh(); }
-function dsel() { if(!sh.size) return toast('请先选择','error'); if(!confirm(`删除${sh.size}条？`)) return; let h=g(KEYS.chat)||[]; h=h.filter((_,i)=>!sh.has(i)); s(KEYS.chat,h); sh.clear(); rh(); toast('已删除','success'); }
-function cAll() { if(!confirm('清空全部？不可恢复。')) return; localStorage.removeItem(KEYS.chat); sh.clear(); rh(); toast('已清空','success'); }
-function exCSV() { const h=g(KEYS.chat)||[]; if(!h.length) return toast('无记录','error'); let csv='\uFEFF时间,角色,内容\n'; h.forEach(m=>csv+=`"${m.time||''}","${m.role==='user'?'住客':'AI'}","${(m.content||'').replace(/"/g,'""')}"\n`); const b=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=`雅千聊天记录_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(u); toast('导出成功！','success'); }
+
+function delUserHist() {
+  const uid = document.getElementById('hu').value;
+  if (!uid) return toast('无选中用户', 'error');
+  if (!confirm('删除用户「'+uid+'」的全部聊天记录？不可恢复。')) return;
+  localStorage.removeItem(CHAT_PREFIX + uid);
+  lh(); toast('已删除', 'success');
+}
+
+function exCSV() {
+  const uid = document.getElementById('hu').value;
+  if (!uid) return toast('无选中用户', 'error');
+  const h = g(CHAT_PREFIX + uid) || [];
+  if (!h.length) return toast('无记录', 'error');
+  let csv = '\uFEFF时间,角色,内容\n';
+  h.forEach(m => csv += '"'+(m.time||'')+'","'+(m.role==='user'?'用户':'AI')+'","'+(m.content||'').replace(/"/g,'""')+'"\n');
+  const b = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a'); a.href=u; a.download='雅千_'+uid+'_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  URL.revokeObjectURL(u); toast('导出成功！', 'success');
+}
 
 function toast(m, t) { const el=document.createElement('div'); el.className='toast '+t; el.textContent=m; document.body.appendChild(el); setTimeout(()=>el.remove(),2200); }
 
 // Init
-le(); lds(); rh();
+le(); lds(); lh();
 document.getElementById('dsOn').addEventListener('change', uds);
 document.getElementById('dsKey').addEventListener('input', uds);
 </script>

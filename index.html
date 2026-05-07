@@ -215,7 +215,8 @@ function sp(name) {
 }
 
 // ═══════ STORAGE ═══════
-const SK = { chat: 'yaqian_chat_history', user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_x7k2m' };
+const SK = { user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_v4' };
+function chatKey() { const u = g(SK.user); return 'yaqian_chat_' + (u ? u.phone : 'guest'); }
 function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
 function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
 
@@ -238,7 +239,9 @@ const KB = {
 };
 
 // ═══════ CHAT ═══════
-let ch = g(SK.chat) || [];
+function getChat() { return g(chatKey()) || []; }
+function saveChat(h) { s(chatKey(), h); }
+let ch = getChat();
 function rc() {
   const c = document.getElementById('chatMsgs');
   if (ch.length === 0) {
@@ -255,7 +258,7 @@ function am(role, content) {
   const t = new Date();
   ch.push({ role, content, time: t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0'), ts: t.getTime() });
   if (ch.length > 200) ch = ch.slice(-200);
-  s(SK.chat, ch); rc();
+  saveChat(ch); rc();
 }
 function qs(msg) { document.getElementById('ci').value = msg; sm(); }
 async function sm() {
@@ -264,14 +267,14 @@ async function sm() {
   inp.value = ''; btn.disabled = true;
   am('user', text);
 
-  // 1. Experiment (highest priority when enabled)
+  // 1. Experiment (highest priority when enabled; no mode — just match active group's triggers)
   const ec = g(SK.exp);
   if (ec && ec.enabled && ec.groups) {
     const ag = ec.groups.find(grp => grp.id === ec.activeGroup);
     if (ag && ag.triggers) {
       for (const tr of ag.triggers) {
-        if (tr.userMsg && text.includes(tr.userMsg)) {
-          if (tr.reply) { await slp(500+Math.random()*500); am('bot', tr.reply); btn.disabled = false; return; }
+        if (tr.userMsg && tr.reply && text.includes(tr.userMsg)) {
+          await slp(500+Math.random()*500); am('bot', tr.reply); btn.disabled = false; return;
         }
       }
     }
@@ -339,7 +342,7 @@ function dologin() {
   tst('登录成功！', 'success'); su(u);
 }
 function su(u) { cu = { name: u.name, phone: u.phone, orders: u.orders, points: u.points }; s(SK.user, cu); up(); }
-function dologout() { cu = null; localStorage.removeItem(SK.user); ch = []; localStorage.removeItem(SK.chat); up(); rc(); }
+function dologout() { cu = null; localStorage.removeItem(SK.user); ch = getChat(); up(); rc(); }
 function up() {
   if (cu) {
     document.getElementById('authForm').style.display = 'none';
