@@ -6,91 +6,84 @@
 <title>雅千酒店 —— 管理员后台</title>
 <style>
 :root {
-  --primary: #1a1a2e; --primary-light: #2d2d4a; --gold: #c9a96e; --gold-light: #f0e4cf;
-  --bg: #f5f3ef; --card-bg: #ffffff; --text: #2c2c2c; --text-secondary: #6b6b6b;
-  --text-muted: #999; --border: #e8e4de; --success: #2e7d32; --error: #c62828;
+  --primary: #1a1a2e; --gold: #c9a96e; --gold-light: #f0e4cf;
+  --bg: #f5f3ef; --card: #fff; --text: #2c2c2c; --text2: #6b6b6b;
+  --text3: #999; --border: #e8e4de; --success: #2e7d32; --error: #c62828;
   --radius: 12px; --radius-sm: 8px; --shadow: 0 2px 12px rgba(0,0,0,0.06);
-  --transition: 0.2s ease;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
 .shell { display: flex; min-height: 100vh; }
-.sidebar { width: 220px; background: var(--primary); color: #fff; flex-shrink: 0; padding: 20px 0; }
+.sidebar { width: 200px; background: var(--primary); color: #fff; flex-shrink: 0; padding: 20px 0; }
 .sidebar .logo { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 12px; }
-.sidebar .logo h1 { font-size: 16px; }
+.sidebar .logo h1 { font-size: 15px; }
 .sidebar .logo span { font-size: 11px; color: var(--gold); }
-.sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: rgba(255,255,255,0.65); text-decoration: none; font-size: 14px; transition: var(--transition); border-left: 3px solid transparent; }
+.sidebar nav a { display: flex; align-items: center; gap: 8px; padding: 11px 20px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; border-left: 3px solid transparent; }
 .sidebar nav a:hover, .sidebar nav a.active { color: #fff; background: rgba(255,255,255,0.06); border-left-color: var(--gold); }
-.main { flex: 1; padding: 24px 32px; overflow-y: auto; max-height: 100vh; }
+.main { flex: 1; padding: 24px 28px; overflow-y: auto; max-height: 100vh; }
 .main section { display: none; }
 .main section.active { display: block; }
 
-.card { background: var(--card-bg); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
-.card h2 { font-size: 18px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-.card .desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+.card { background: var(--card); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+.card h2 { font-size: 17px; margin-bottom: 6px; }
+.card .desc { font-size: 12px; color: var(--text3); margin-bottom: 20px; line-height: 1.6; }
 
-.fg { margin-bottom: 14px; }
-.fg label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; }
-.fg input, .fg textarea, .fg select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font); outline: none; transition: var(--transition); }
-.fg textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
+.fg { margin-bottom: 12px; }
+.fg label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 3px; font-weight: 500; }
+.fg input, .fg textarea, .fg select { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font); outline: none; }
+.fg textarea { resize: vertical; min-height: 55px; line-height: 1.6; }
 .fg input:focus, .fg textarea:focus, .fg select:focus { border-color: var(--gold); }
-.fg .hint { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
-.fg-row { display: flex; gap: 12px; }
+.fg .hint { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.fg-row { display: flex; gap: 10px; }
 .fg-row > * { flex: 1; }
 
-.btn { padding: 10px 20px; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: var(--font); }
+.btn { padding: 9px 18px; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
 .btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-light); }
 .btn-success { background: var(--success); color: #fff; }
 .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
-.btn-outline:hover { border-color: var(--gold); }
-.btn-danger { background: #fff; border: 1px solid var(--error); color: var(--error); }
+.btn-danger { color: var(--error); background: #fff; border: 1px solid var(--error); }
 .btn-danger:hover { background: #fef2f2; }
-.btn-sm { padding: 5px 12px; font-size: 12px; }
-.btn-group { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+.btn-group { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 
-.toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.toggle { position: relative; width: 48px; height: 26px; cursor: pointer; }
+.toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
 .toggle input { display: none; }
-.toggle .slider { position: absolute; inset: 0; background: #ccc; border-radius: 26px; transition: var(--transition); }
-.toggle .slider::before { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: var(--transition); }
+.toggle .slider { position: absolute; inset: 0; background: #ccc; border-radius: 24px; transition: 0.2s; }
+.toggle .slider::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: 0.2s; }
 .toggle input:checked + .slider { background: var(--success); }
-.toggle input:checked + .slider::before { transform: translateX(22px); }
-.toggle-label { font-size: 14px; font-weight: 500; }
+.toggle input:checked + .slider::before { transform: translateX(20px); }
+.toggle-label { font-size: 13px; font-weight: 500; }
 
-.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge { display: inline-block; padding: 3px 9px; border-radius: 16px; font-size: 11px; font-weight: 600; }
 .badge-success { background: #e8f5e9; color: var(--success); }
 .badge-warning { background: #fff8e1; color: #f57c00; }
 .badge-error { background: #ffebee; color: var(--error); }
-.badge-info { background: #e3f2fd; color: #1565c0; }
 
-/* Experiment groups */
-.group-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: #fdfcf9; }
-.group-card .group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.group-card .group-title { font-size: 14px; font-weight: 700; }
-.group-card .group-mode { font-size: 11px; color: var(--primary); background: var(--gold-light); padding: 2px 8px; border-radius: 10px; }
-.trigger-card { border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px; background: #fff; }
-.trigger-card .trigger-num { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-.trigger-card textarea { min-height: 50px; font-size: 13px; }
+.group-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; background: #fdfcf9; }
+.group-card .gh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.group-card .gt { font-size: 14px; font-weight: 700; }
+.group-card .gm { font-size: 11px; background: var(--gold-light); color: var(--primary); padding: 2px 8px; border-radius: 10px; }
+.trigger-block { border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px; background: #fff; }
+.trigger-block .tn { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+.trigger-block textarea { min-height: 48px; font-size: 12px; }
 
-/* Chat table */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { text-align: left; padding: 10px 12px; background: #f9f8f5; border-bottom: 2px solid var(--border); font-size: 12px; color: var(--text-muted); font-weight: 600; }
-td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-.role-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.disabled-section { opacity: 0.4; pointer-events: none; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 9px 10px; background: #f9f8f5; border-bottom: 2px solid var(--border); font-size: 11px; color: var(--text3); font-weight: 600; }
+td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+.role-tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; }
 .role-tag.user { background: var(--primary); color: #fff; }
 .role-tag.bot { background: var(--gold-light); color: var(--primary); }
-.msg-cell { max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.msg-cell { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.toast { position: fixed; top: 16px; right: 16px; padding: 10px 18px; border-radius: var(--radius-sm); font-size: 13px; color: #fff; z-index: 1000; animation: slideIn 0.3s ease; }
+.toast { position: fixed; top: 14px; right: 14px; padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; color: #fff; z-index: 1000; animation: si 0.3s ease; }
 .toast.success { background: var(--success); }
 .toast.error { background: var(--error); }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-.http-status { font-family: monospace; font-size: 12px; margin-top: 8px; padding: 8px 12px; background: #f9f8f5; border-radius: var(--radius-sm); word-break: break-all; }
-.disabled-section { opacity: 0.45; pointer-events: none; }
+@keyframes si { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.http-status { font-family: monospace; font-size: 11px; margin-top: 8px; padding: 8px; background: #f9f8f5; border-radius: var(--radius-sm); word-break: break-all; }
 </style>
 </head>
 <body>
@@ -106,396 +99,296 @@ td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
   </aside>
 
   <main class="main">
-    <!-- ══════════ EXPERIMENT ══════════ -->
+    <!-- ═══ EXPERIMENT ═══ -->
     <section id="section-experiment" class="active">
       <div class="card">
         <h2>🧪 实验设置</h2>
-        <p class="desc">开启实验后，AI管家将使用下方预设的触发词和回复，<b>优先级高于DeepSeek API</b>。关闭后，所有实验预设不生效，对话走正常流程（DeepSeek → 知识库）。</p>
+        <p class="desc">开启后，AI管家匹配到触发词时使用对应组别的预设回复（<b>优先级高于DeepSeek</b>）。关闭后所有实验预设不生效。</p>
 
         <div class="toggle-row">
-          <label class="toggle"><input type="checkbox" id="expEnabled" onchange="toggleExp()"><span class="slider"></span></label>
+          <label class="toggle"><input type="checkbox" id="expOn" onchange="te()"><span class="slider"></span></label>
           <span class="toggle-label">启用实验模式</span>
-          <span id="expStatus" class="badge badge-warning">未启用</span>
+          <span id="expBadge" class="badge badge-warning">未启用</span>
         </div>
 
         <div id="expContent">
           <div id="expGroups"></div>
           <div class="btn-group">
-            <button class="btn btn-outline" onclick="addGroup()">＋ 新增实验组</button>
-            <button class="btn btn-success" onclick="saveExperiment()">💾 保存全部</button>
-            <button class="btn btn-outline" onclick="resetExperiment()">恢复默认</button>
+            <button class="btn btn-outline" onclick="addGroup()">＋ 新增组别</button>
+            <button class="btn btn-success" onclick="saveExp()">💾 保存全部</button>
+            <button class="btn btn-outline" onclick="resetExp()">恢复默认</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ══════════ DEEPSEEK ══════════ -->
+    <!-- ═══ DEEPSEEK ═══ -->
     <section id="section-deepseek">
       <div class="card">
         <h2>🤖 DeepSeek API</h2>
-        <p class="desc">接入DeepSeek后作为<b>实验预设的兜底引擎</b>——实验模式下优先命中预设，未命中时调用DeepSeek。API不可用时自动回落至内置知识库。</p>
+        <p class="desc">实验未命中时调用DeepSeek作为兜底。API不可用时回落至内置知识库。</p>
 
         <div class="toggle-row">
-          <label class="toggle"><input type="checkbox" id="dsEnabled" onchange="toggleDS()"><span class="slider"></span></label>
-          <span class="toggle-label">启用 DeepSeek API</span>
-          <span id="dsStatus" class="badge badge-warning">未启用</span>
+          <label class="toggle"><input type="checkbox" id="dsOn" onchange="tds()"><span class="slider"></span></label>
+          <span class="toggle-label">启用 DeepSeek</span>
+          <span id="dsBadge" class="badge badge-warning">未启用</span>
         </div>
 
-        <div class="fg"><label>API Key</label><input type="password" id="dsKey" placeholder="sk-xxxxxxxxxxxxxxxx"><div class="hint"><a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com</a> 创建</div></div>
+        <div class="fg"><label>API Key</label><input type="password" id="dsKey" placeholder="sk-..."><div class="hint"><a href="https://platform.deepseek.com/api_keys" target="_blank">获取 Key</a></div></div>
         <div class="fg"><label>模型</label><select id="dsModel"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select></div>
         <div class="fg"><label>System Prompt</label><textarea id="dsPrompt" rows="3"></textarea></div>
 
         <div class="btn-group">
           <button class="btn btn-primary" onclick="saveDS()">💾 保存</button>
-          <button class="btn btn-outline" onclick="testDS()">🧪 测试连接</button>
+          <button class="btn btn-outline" onclick="testDS()">🧪 测试</button>
           <button class="btn btn-outline" onclick="resetDS()">恢复默认</button>
         </div>
         <div id="dsResult" style="margin-top:12px;"></div>
       </div>
     </section>
 
-    <!-- ══════════ CHAT HISTORY ══════════ -->
+    <!-- ═══ HISTORY ═══ -->
     <section id="section-history">
       <div class="card">
         <h2>📋 聊天记录</h2>
-        <p class="desc">查看、筛选、导出和删除聊天记录。</p>
-
-        <div class="fg-row" style="margin-bottom:16px;">
-          <div class="fg"><label>角色</label><select id="histFilter" onchange="renderHist()"><option value="all">全部</option><option value="user">用户</option><option value="bot">AI</option></select></div>
-          <div class="fg"><label>搜索</label><input type="text" id="histSearch" placeholder="搜索内容..." oninput="renderHist()"></div>
+        <p class="desc">查看、导出、删除聊天记录。</p>
+        <div class="fg-row" style="margin-bottom:14px;">
+          <div class="fg"><label>角色</label><select id="hf" onchange="rh()"><option value="all">全部</option><option value="user">用户</option><option value="bot">AI</option></select></div>
+          <div class="fg"><label>搜索</label><input type="text" id="hs" placeholder="搜索内容..." oninput="rh()"></div>
         </div>
-
-        <div class="btn-group" style="margin-bottom:16px;">
-          <button class="btn btn-outline btn-sm" onclick="selAllHist()">全选</button>
-          <button class="btn btn-outline btn-sm" onclick="deselAllHist()">取消全选</button>
-          <button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 导出CSV</button>
-          <button class="btn btn-danger btn-sm" onclick="delSelHist()">🗑 删除选中</button>
-          <button class="btn btn-danger btn-sm" onclick="clearHist()">🗑 清空全部</button>
+        <div class="btn-group" style="margin-bottom:14px;">
+          <button class="btn btn-outline btn-sm" onclick="sa()">全选</button>
+          <button class="btn btn-outline btn-sm" onclick="da()">取消</button>
+          <button class="btn btn-outline btn-sm" onclick="exCSV()">📥 CSV</button>
+          <button class="btn btn-danger btn-sm" onclick="dsel()">🗑 删选中</button>
+          <button class="btn btn-danger btn-sm" onclick="cAll()">🗑 清空</button>
         </div>
-
-        <div class="table-wrap">
-          <table><thead><tr><th><input type="checkbox" id="selAll" onchange="toggleAllHist()"></th><th>时间</th><th>角色</th><th>内容</th></tr></thead>
-          <tbody id="histBody"></tbody></table>
-        </div>
-        <div id="histEmpty" style="text-align:center;padding:40px;color:var(--text-muted);display:none;">暂无聊天记录</div>
+        <table><thead><tr><th><input type="checkbox" id="selAll" onchange="ta()"></th><th>时间</th><th>角色</th><th>内容</th></tr></thead><tbody id="htb"></tbody></table>
+        <div id="he" style="text-align:center;padding:30px;color:var(--text3);display:none;">暂无记录</div>
       </div>
     </section>
   </main>
 </div>
 
 <script>
-const KEYS = {
-  experiment: 'yaqian_experiment_cfg',
-  deepseek: 'yaqian_deepseek_cfg',
-  chat: 'yaqian_chat_history'
+const KEYS = { exp: 'yaqian_experiment_cfg', ds: 'yaqian_deepseek_cfg', chat: 'yaqian_chat_history' };
+
+const DEF_EXP = {
+  enabled: false,
+  groups: [
+    { id: 'g1', name: '组1', mode: 'affinity', triggers: [
+      { userMsg: '', selfReply: '', affinityReply: '' },
+      { userMsg: '', selfReply: '', affinityReply: '' },
+      { userMsg: '', selfReply: '', affinityReply: '' }
+    ]},
+    { id: 'g2', name: '组2', mode: 'affinity', triggers: [
+      { userMsg: '', selfReply: '', affinityReply: '' },
+      { userMsg: '', selfReply: '', affinityReply: '' },
+      { userMsg: '', selfReply: '', affinityReply: '' }
+    ]}
+  ]
 };
 
-const DEFAULTS = {
-  experiment: {
-    enabled: false,
-    groups: [
-      {
-        id: 'g1',
-        name: '房间服务',
-        mode: 'affinity',
-        triggers: [
-          { userMsg: '我的房间还是没准备好吗', selfReply: '呜呜呜，我真是个大笨蛋！竟然把打扫任务给漏发了。我已经紧急呼叫清洁人员，现在正在快马加鞭为您打扫中！求您手下留情，请别赏我一丈红好吗？😭', affinityReply: '哎呀……实在抱歉让您久等了。原来是我不小心漏发了清洁任务，现在正在快马加鞭为您打扫中！好饭不怕晚，好房也是嘛！等您躺在云朵般的床上时，您一定会感叹：人生苦短，还是这里最舒坦。另外，在您等待的这几分钟里，请允许我为您播放一首轻松的爵士乐解解闷好吗？🎵' },
-          { userMsg: '怎么还没打扫', selfReply: '', affinityReply: '' }
-        ]
-      },
-      {
-        id: 'g2',
-        name: '理解纠正',
-        mode: 'affinity',
-        triggers: [
-          { userMsg: '你理解错了', selfReply: '呜呜呜，我真是个大笨蛋！竟然理解错了您的意思。我现在重新为您推荐，求您手下留情，请别赏我一丈红好吗？😭', affinityReply: '哎呀……实在抱歉理解错了您的意思。原来是需要周边景点推荐而不是酒店服务推荐，我现在马上为您重新推荐！好事多磨，好的旅程也是嘛！等您漫步在洒满夕阳的石板路上时，您一定会感叹：人间值得！✨' }
-        ]
-      }
-    ]
-  },
-  deepseek: {
-    enabled: false, apiKey: '', model: 'deepseek-chat',
-    systemPrompt: '你是雅千酒店的AI智能管家Alice，热情专业带一点幽默感。请用中文回复，简洁友好。'
-  }
-};
+const DEF_DS = { enabled: false, apiKey: '', model: 'deepseek-chat', systemPrompt: '你是雅千酒店AI管家Alice，热情专业带一点幽默感。请用中文回复，简洁友好。' };
 
-function get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
-function set(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
+function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+function eh(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
 
-// ══════════ NAV ══════════
+// ═══ NAV ═══
 document.querySelectorAll('.sidebar nav a[data-section]').forEach(a => {
   a.addEventListener('click', function(e) {
     e.preventDefault();
     document.querySelectorAll('.sidebar nav a').forEach(x => x.classList.remove('active'));
     this.classList.add('active');
-    document.querySelectorAll('.main section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.main section').forEach(x => x.classList.remove('active'));
     document.getElementById('section-' + this.dataset.section).classList.add('active');
-    if (this.dataset.section === 'history') renderHist();
+    if (this.dataset.section === 'history') rh();
   });
 });
 
-// ══════════ EXPERIMENT ══════════
-function loadExp() {
-  const cfg = get(KEYS.experiment) || DEFAULTS.experiment;
-  document.getElementById('expEnabled').checked = cfg.enabled;
-  updateExpStatus();
-  renderExpGroups(cfg);
+// ═══ EXPERIMENT ═══
+function le() {
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  document.getElementById('expOn').checked = cfg.enabled;
+  ue();
+  re(cfg);
 }
-
-function updateExpStatus() {
-  const on = document.getElementById('expEnabled').checked;
-  const b = document.getElementById('expStatus');
+function ue() {
+  const on = document.getElementById('expOn').checked;
+  const b = document.getElementById('expBadge');
   b.textContent = on ? '已启用' : '未启用';
   b.className = on ? 'badge badge-success' : 'badge badge-warning';
   document.getElementById('expContent').className = on ? '' : 'disabled-section';
 }
-
-function toggleExp() { updateExpStatus(); }
-
-function renderExpGroups(cfg) {
-  const container = document.getElementById('expGroups');
-  const groups = (cfg || get(KEYS.experiment) || DEFAULTS.experiment).groups || [];
-  container.innerHTML = groups.map((g, gi) => `
-    <div class="group-card" data-gi="${gi}">
-      <div class="group-header">
-        <span class="group-title">📁 ${escapeHtml(g.name || '未命名组')}</span>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="group-mode">${g.mode === 'self-deprecating' ? '😭 自嘲式' : '😊 亲和式'}</span>
-          <button class="btn btn-danger btn-sm" onclick="delGroup(${gi})">删除组</button>
+function te() { ue(); }
+function re(cfg) {
+  const c = document.getElementById('expGroups');
+  const groups = (cfg || g(KEYS.exp) || DEF_EXP).groups || [];
+  c.innerHTML = groups.map((g, gi) => `
+    <div class="group-card">
+      <div class="gh">
+        <span class="gt">📁 ${eh(g.name||'未命名')}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="gm">${g.mode==='self-deprecating'?'😭 自嘲式':'😊 亲和式'}</span>
+          <button class="btn btn-danger btn-sm" onclick="dg(${gi})">删除组</button>
         </div>
       </div>
-      <div class="fg-row" style="margin-bottom:12px;">
-        <div class="fg"><label>组名称</label><input type="text" value="${escapeHtml(g.name)}" class="gname" placeholder="例如：房间服务"></div>
+      <div class="fg-row" style="margin-bottom:10px;">
+        <div class="fg"><label>组名称</label><input type="text" value="${eh(g.name)}" class="gn" placeholder="组名称"></div>
         <div class="fg"><label>幽默风格</label><select class="gmode">
           <option value="affinity" ${g.mode==='affinity'?'selected':''}>😊 亲和式幽默</option>
           <option value="self-deprecating" ${g.mode==='self-deprecating'?'selected':''}>😭 自嘲式幽默</option>
         </select></div>
       </div>
-      <div class="triggers-container" data-gi="${gi}">
-        ${(g.triggers || []).map((tr, ti) => `
-          <div class="trigger-card" data-ti="${ti}">
-            <div class="trigger-num">触发 #${ti + 1}</div>
-            <div class="fg"><label>用户触发词（匹配包含此内容的用户消息）</label><input type="text" value="${escapeHtml(tr.userMsg || '')}" class="tmsg" placeholder="例如：我的房间还是没准备好吗"></div>
+      <div class="triggers-wrap">
+        ${(g.triggers||[]).map((tr, ti) => `
+          <div class="trigger-block">
+            <div class="tn">触发 #${ti+1}</div>
+            <div class="fg"><label>用户触发词</label><input type="text" value="${eh(tr.userMsg||'')}" class="tmsg" placeholder="匹配包含此内容的用户消息"></div>
             <div class="fg-row">
-              <div class="fg"><label>😭 自嘲式回复</label><textarea class="tself" placeholder="自嘲式幽默的回复内容...">${escapeHtml(tr.selfReply || '')}</textarea></div>
-              <div class="fg"><label>😊 亲和式回复</label><textarea class="taff" placeholder="亲和式幽默的回复内容...">${escapeHtml(tr.affinityReply || '')}</textarea></div>
+              <div class="fg"><label>😭 自嘲式回复</label><textarea class="tself" placeholder="自嘲式幽默的回复...">${eh(tr.selfReply||'')}</textarea></div>
+              <div class="fg"><label>😊 亲和式回复</label><textarea class="taff" placeholder="亲和式幽默的回复...">${eh(tr.affinityReply||'')}</textarea></div>
             </div>
-            <button class="btn btn-danger btn-sm" onclick="delTrigger(${gi},${ti})">删除此触发</button>
+            <button class="btn btn-danger btn-sm" onclick="dt(${gi},${ti})">删除此触发</button>
           </div>
         `).join('')}
       </div>
-      <button class="btn btn-outline btn-sm" onclick="addTrigger(${gi})" style="margin-top:8px;">＋ 新增触发词</button>
+      <button class="btn btn-outline btn-sm" onclick="at(${gi})" style="margin-top:6px;">＋ 新增触发词</button>
     </div>
   `).join('');
 }
-
 function addGroup() {
-  const cfg = get(KEYS.experiment) || DEFAULTS.experiment;
-  cfg.groups.push({ id: 'g' + Date.now(), name: '新实验组', mode: 'affinity', triggers: [{ userMsg: '', selfReply: '', affinityReply: '' }] });
-  set(KEYS.experiment, cfg);
-  renderExpGroups(cfg);
-  toast('已添加新实验组', 'success');
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  cfg.groups.push({ id: 'g'+Date.now(), name: '新组', mode: 'affinity', triggers: [{ userMsg:'',selfReply:'',affinityReply:'' }] });
+  s(KEYS.exp, cfg); re(cfg); toast('已添加新组', 'success');
 }
-
-function delGroup(gi) {
-  if (!confirm('确定删除这个实验组？')) return;
-  const cfg = get(KEYS.experiment) || DEFAULTS.experiment;
-  cfg.groups.splice(gi, 1);
-  set(KEYS.experiment, cfg);
-  renderExpGroups(cfg);
+function dg(gi) {
+  if (!confirm('删除这个组？')) return;
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  cfg.groups.splice(gi, 1); s(KEYS.exp, cfg); re(cfg);
 }
-
-function addTrigger(gi) {
-  const cfg = get(KEYS.experiment) || DEFAULTS.experiment;
-  cfg.groups[gi].triggers.push({ userMsg: '', selfReply: '', affinityReply: '' });
-  set(KEYS.experiment, cfg);
-  renderExpGroups(cfg);
+function at(gi) {
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  cfg.groups[gi].triggers.push({ userMsg:'',selfReply:'',affinityReply:'' });
+  s(KEYS.exp, cfg); re(cfg);
 }
-
-function delTrigger(gi, ti) {
-  const cfg = get(KEYS.experiment) || DEFAULTS.experiment;
-  cfg.groups[gi].triggers.splice(ti, 1);
-  set(KEYS.experiment, cfg);
-  renderExpGroups(cfg);
+function dt(gi, ti) {
+  const cfg = g(KEYS.exp) || DEF_EXP;
+  cfg.groups[gi].triggers.splice(ti, 1); s(KEYS.exp, cfg); re(cfg);
 }
-
-function saveExperiment() {
-  const cfg = {
-    enabled: document.getElementById('expEnabled').checked,
-    groups: []
-  };
-
+function saveExp() {
+  const cfg = { enabled: document.getElementById('expOn').checked, groups: [] };
   document.querySelectorAll('.group-card').forEach(gc => {
     const triggers = [];
-    gc.querySelectorAll('.trigger-card').forEach(tc => {
-      const msg = tc.querySelector('.tmsg')?.value?.trim() || '';
-      const self = tc.querySelector('.tself')?.value?.trim() || '';
-      const aff = tc.querySelector('.taff')?.value?.trim() || '';
-      if (msg) triggers.push({ userMsg: msg, selfReply: self, affinityReply: aff });
+    gc.querySelectorAll('.trigger-block').forEach(tb => {
+      const m = tb.querySelector('.tmsg')?.value?.trim()||'';
+      const sf = tb.querySelector('.tself')?.value?.trim()||'';
+      const af = tb.querySelector('.taff')?.value?.trim()||'';
+      if (m) triggers.push({ userMsg:m, selfReply:sf, affinityReply:af });
     });
-    const name = gc.querySelector('.gname')?.value?.trim() || '未命名';
-    const mode = gc.querySelector('.gmode')?.value || 'affinity';
-    cfg.groups.push({ id: 'g' + Date.now() + Math.random(), name, mode, triggers });
+    const name = gc.querySelector('.gn')?.value?.trim()||'未命名';
+    const mode = gc.querySelector('.gmode')?.value||'affinity';
+    cfg.groups.push({ id:'g'+Date.now()+Math.random(), name, mode, triggers });
   });
-
-  set(KEYS.experiment, cfg);
-  renderExpGroups(cfg);
-  toast('实验配置已保存！前台将在数秒内自动刷新。', 'success');
+  s(KEYS.exp, cfg); re(cfg);
+  toast('已保存！前台数秒内自动刷新。', 'success');
 }
-
-function resetExperiment() {
-  if (!confirm('确定恢复默认实验配置？')) return;
-  set(KEYS.experiment, JSON.parse(JSON.stringify(DEFAULTS.experiment)));
-  loadExp();
+function resetExp() {
+  if (!confirm('恢复默认？当前内容将被覆盖。')) return;
+  s(KEYS.exp, JSON.parse(JSON.stringify(DEF_EXP))); le();
   toast('已恢复默认', 'success');
 }
 
-// ══════════ DEEPSEEK ══════════
-function loadDS() {
-  const cfg = get(KEYS.deepseek) || DEFAULTS.deepseek;
-  document.getElementById('dsEnabled').checked = cfg.enabled;
-  document.getElementById('dsKey').value = cfg.apiKey || '';
-  document.getElementById('dsModel').value = cfg.model || 'deepseek-chat';
-  document.getElementById('dsPrompt').value = cfg.systemPrompt || '';
-  updateDSStatus();
+// ═══ DEEPSEEK ═══
+function lds() {
+  const cfg = g(KEYS.ds) || DEF_DS;
+  document.getElementById('dsOn').checked = cfg.enabled;
+  document.getElementById('dsKey').value = cfg.apiKey||'';
+  document.getElementById('dsModel').value = cfg.model||'deepseek-chat';
+  document.getElementById('dsPrompt').value = cfg.systemPrompt||'';
+  uds();
 }
-
-function updateDSStatus() {
-  const on = document.getElementById('dsEnabled').checked;
-  const hasKey = document.getElementById('dsKey').value.trim();
-  const b = document.getElementById('dsStatus');
-  if (on && hasKey) { b.textContent = '已启用'; b.className = 'badge badge-success'; }
-  else if (on) { b.textContent = '缺少Key'; b.className = 'badge badge-error'; }
-  else { b.textContent = '未启用'; b.className = 'badge badge-warning'; }
+function uds() {
+  const on = document.getElementById('dsOn').checked;
+  const has = document.getElementById('dsKey').value.trim();
+  const b = document.getElementById('dsBadge');
+  if (on&&has) { b.textContent='已启用'; b.className='badge badge-success'; }
+  else if (on) { b.textContent='缺少Key'; b.className='badge badge-error'; }
+  else { b.textContent='未启用'; b.className='badge badge-warning'; }
 }
-
-function toggleDS() { updateDSStatus(); }
-
+function tds() { uds(); }
 function saveDS() {
-  set(KEYS.deepseek, {
-    enabled: document.getElementById('dsEnabled').checked,
+  s(KEYS.ds, {
+    enabled: document.getElementById('dsOn').checked,
     apiKey: document.getElementById('dsKey').value.trim(),
     model: document.getElementById('dsModel').value,
     systemPrompt: document.getElementById('dsPrompt').value.trim()
   });
-  updateDSStatus();
-  toast('DeepSeek 配置已保存！', 'success');
+  uds(); toast('DeepSeek 已保存！', 'success');
 }
-
 function resetDS() {
-  if (!confirm('确定恢复默认？')) return;
-  set(KEYS.deepseek, JSON.parse(JSON.stringify(DEFAULTS.deepseek)));
-  loadDS();
-  toast('已恢复默认', 'success');
+  if (!confirm('恢复默认？')) return;
+  s(KEYS.ds, JSON.parse(JSON.stringify(DEF_DS))); lds(); toast('已恢复默认', 'success');
 }
-
 async function testDS() {
   const key = document.getElementById('dsKey').value.trim();
-  if (!key) return toast('请先填写 API Key', 'error');
+  if (!key) return toast('请先填Key', 'error');
   const div = document.getElementById('dsResult');
-  div.innerHTML = '<span style="color:var(--text-muted);">⏳ 测试中...</span>';
+  div.innerHTML = '<span style="color:var(--text3);">⏳ 测试中...</span>';
   try {
     const r = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({ model: document.getElementById('dsModel').value, messages: [{ role: 'user', content: '你好' }], max_tokens: 30 })
+      method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body: JSON.stringify({ model: document.getElementById('dsModel').value, messages: [{ role:'user', content:'你好' }], max_tokens: 30 })
     });
     if (r.ok) {
       const d = await r.json();
-      div.innerHTML = `<span class="badge badge-success">✅ 连接成功</span><div class="http-status">${escapeHtml(d.choices?.[0]?.message?.content || '')}</div>`;
+      div.innerHTML = `<span class="badge badge-success">✅ 成功</span><div class="http-status">${eh(d.choices?.[0]?.message?.content||'')}</div>`;
       toast('连接成功！', 'success');
     } else {
       const e = await r.text();
-      div.innerHTML = `<span class="badge badge-error">❌ 失败 (HTTP ${r.status})</span><div class="http-status">${escapeHtml(e.slice(0,200))}</div>`;
+      div.innerHTML = `<span class="badge badge-error">❌ 失败 (${r.status})</span><div class="http-status">${eh(e.slice(0,200))}</div>`;
     }
-  } catch(e) {
-    div.innerHTML = `<span class="badge badge-error">❌ 网络错误</span><div class="http-status">${escapeHtml(e.message)}</div>`;
-  }
+  } catch(e) { div.innerHTML = `<span class="badge badge-error">❌ 网络错误</span><div class="http-status">${eh(e.message)}</div>`; }
 }
 
-// ══════════ CHAT HISTORY ══════════
-let selHist = new Set();
-
-function renderHist() {
-  const hist = get(KEYS.chat) || [];
-  const filter = document.getElementById('histFilter').value;
-  const search = (document.getElementById('histSearch').value || '').toLowerCase();
-  const tbody = document.getElementById('histBody');
-  const empty = document.getElementById('histEmpty');
-
-  let f = hist;
-  if (filter !== 'all') f = f.filter(m => m.role === filter);
-  if (search) f = f.filter(m => (m.content || '').toLowerCase().includes(search));
-
-  if (f.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = f.map(m => {
+// ═══ HISTORY ═══
+let sh = new Set();
+function rh() {
+  const hist = g(KEYS.chat)||[];
+  const f = document.getElementById('hf').value;
+  const s = (document.getElementById('hs').value||'').toLowerCase();
+  const tbody = document.getElementById('htb');
+  const empty = document.getElementById('he');
+  let fl = hist;
+  if (f!=='all') fl = fl.filter(m => m.role===f);
+  if (s) fl = fl.filter(m => (m.content||'').toLowerCase().includes(s));
+  if (!fl.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  tbody.innerHTML = fl.map(m => {
     const ri = hist.indexOf(m);
     return `<tr>
-      <td><input type="checkbox" ${selHist.has(ri)?'checked':''} onchange="togHist(${ri},this.checked)"></td>
-      <td style="white-space:nowrap;">${m.time||'-'}</td>
+      <td><input type="checkbox" ${sh.has(ri)?'checked':''} onchange="th(${ri},this.checked)"></td>
+      <td>${m.time||'-'}</td>
       <td><span class="role-tag ${m.role}">${m.role==='user'?'住客':'AI'}</span></td>
-      <td><div class="msg-cell" title="${escapeHtml(m.content)}">${escapeHtml(m.content)}</div></td>
+      <td><div class="msg-cell" title="${eh(m.content)}">${eh(m.content)}</div></td>
     </tr>`;
   }).join('');
 }
+function th(i, c) { c?sh.add(i):sh.delete(i); }
+function ta() { const hist=g(KEYS.chat)||[]; sh.clear(); if(document.getElementById('selAll').checked) hist.forEach((_,i)=>sh.add(i)); rh(); }
+function sa() { document.getElementById('selAll').checked=true; ta(); }
+function da() { document.getElementById('selAll').checked=false; sh.clear(); rh(); }
+function dsel() { if(!sh.size) return toast('请先选择','error'); if(!confirm(`删除${sh.size}条？`)) return; let h=g(KEYS.chat)||[]; h=h.filter((_,i)=>!sh.has(i)); s(KEYS.chat,h); sh.clear(); rh(); toast('已删除','success'); }
+function cAll() { if(!confirm('清空全部？不可恢复。')) return; localStorage.removeItem(KEYS.chat); sh.clear(); rh(); toast('已清空','success'); }
+function exCSV() { const h=g(KEYS.chat)||[]; if(!h.length) return toast('无记录','error'); let csv='\uFEFF时间,角色,内容\n'; h.forEach(m=>csv+=`"${m.time||''}","${m.role==='user'?'住客':'AI'}","${(m.content||'').replace(/"/g,'""')}"\n`); const b=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=`雅千聊天记录_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(u); toast('导出成功！','success'); }
 
-function togHist(i, c) { c ? selHist.add(i) : selHist.delete(i); }
-function toggleAllHist() {
-  const hist = get(KEYS.chat) || [];
-  const c = document.getElementById('selAll').checked;
-  selHist.clear();
-  if (c) hist.forEach((_, i) => selHist.add(i));
-  renderHist();
-}
-function selAllHist() { document.getElementById('selAll').checked = true; toggleAllHist(); }
-function deselAllHist() { document.getElementById('selAll').checked = false; selHist.clear(); renderHist(); }
-
-function delSelHist() {
-  if (selHist.size === 0) return toast('请先选择', 'error');
-  if (!confirm(`删除 ${selHist.size} 条？`)) return;
-  let hist = get(KEYS.chat) || [];
-  hist = hist.filter((_, i) => !selHist.has(i));
-  set(KEYS.chat, hist);
-  selHist.clear();
-  renderHist();
-  toast('已删除', 'success');
-}
-
-function clearHist() {
-  if (!confirm('清空全部聊天记录？不可恢复。')) return;
-  localStorage.removeItem(KEYS.chat);
-  selHist.clear();
-  renderHist();
-  toast('已清空', 'success');
-}
-
-function exportCSV() {
-  const hist = get(KEYS.chat) || [];
-  if (!hist.length) return toast('无记录', 'error');
-  let csv = '\uFEFF时间,角色,内容\n';
-  hist.forEach(m => csv += `"${m.time||''}","${m.role==='user'?'住客':'AI'}","${(m.content||'').replace(/"/g,'""')}"\n`);
-  const b = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const u = URL.createObjectURL(b);
-  const a = document.createElement('a'); a.href = u; a.download = `雅千聊天记录_${new Date().toISOString().slice(0,10)}.csv`; a.click();
-  URL.revokeObjectURL(u);
-  toast('导出成功！', 'success');
-}
-
-// ══════════ UTILS ══════════
-function toast(m, t) {
-  const el = document.createElement('div'); el.className = 'toast ' + t; el.textContent = m;
-  document.body.appendChild(el); setTimeout(() => el.remove(), 2500);
-}
-function escapeHtml(s) {
-  const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
-}
+function toast(m, t) { const el=document.createElement('div'); el.className='toast '+t; el.textContent=m; document.body.appendChild(el); setTimeout(()=>el.remove(),2200); }
 
 // Init
-loadExp();
-loadDS();
-renderHist();
-document.getElementById('dsEnabled').addEventListener('change', updateDSStatus);
-document.getElementById('dsKey').addEventListener('input', updateDSStatus);
+le(); lds(); rh();
+document.getElementById('dsOn').addEventListener('change', uds);
+document.getElementById('dsKey').addEventListener('input', uds);
 </script>
 </body>
 </html>
