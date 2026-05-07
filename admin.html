@@ -62,9 +62,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
 
 /* preview avatar */
 .av-preview { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.av-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
-.av-circle.bot { background: var(--gold-light); color: var(--primary); }
-.av-circle.user { background: var(--primary); color: #fff; }
+.av-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; overflow: hidden; background-size: cover; background-position: center; }
+.av-circle.bot { background-color: var(--gold-light); color: var(--primary); }
+.av-circle.user { background-color: var(--primary); color: #fff; }
 
 /* history */
 .session-card { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden; }
@@ -132,22 +132,34 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); min-
     <section id="section-characters">
       <div class="card">
         <h2>🎭 角色设置</h2>
-        <p class="desc">设置前台聊天页面的机器人和用户头像与名称，修改后前台即时生效。</p>
+        <p class="desc">设置前台聊天页面的机器人和用户头像与名称。可上传图片头像或使用文字头像，修改后前台即时生效。</p>
 
         <div style="display:flex;gap:20px;flex-wrap:wrap;">
           <!-- Bot -->
-          <div style="flex:1;min-width:220px;border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+          <div style="flex:1;min-width:260px;border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
             <h3 style="font-size:14px;margin-bottom:12px;">🤖 机器人</h3>
             <div class="av-preview"><div class="av-circle bot" id="bavPrev">A</div><span id="bnamePrev" style="font-size:14px;font-weight:600;">Alice</span></div>
             <div class="fg"><label>名称</label><input type="text" id="botName" oninput="cpBot()" placeholder="Alice"></div>
-            <div class="fg"><label>头像文字（1-2字）</label><input type="text" id="botAv" oninput="cpBot()" maxlength="2" placeholder="A"></div>
+            <div class="fg"><label>头像文字（无图片时显示）</label><input type="text" id="botAv" oninput="cpBot()" maxlength="2" placeholder="A"></div>
+            <div class="fg">
+              <label>上传头像图片</label>
+              <input type="file" id="botImgFile" accept="image/*" onchange="handleImgUpload('bot')" style="font-size:12px;">
+            </div>
+            <div class="fg"><button class="btn btn-outline btn-sm" onclick="clearImg('bot')">清除图片（用文字头像）</button></div>
+            <input type="hidden" id="botImgData">
           </div>
           <!-- User -->
-          <div style="flex:1;min-width:220px;border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
+          <div style="flex:1;min-width:260px;border:1px solid var(--border);border-radius:var(--radius);padding:16px;">
             <h3 style="font-size:14px;margin-bottom:12px;">👤 用户</h3>
             <div class="av-preview"><div class="av-circle user" id="uavPrev">客</div><span id="unamePrev" style="font-size:14px;font-weight:600;">客人</span></div>
             <div class="fg"><label>名称</label><input type="text" id="userName" oninput="cpUser()" placeholder="客人"></div>
-            <div class="fg"><label>头像文字（1-2字）</label><input type="text" id="userAv" oninput="cpUser()" maxlength="2" placeholder="客"></div>
+            <div class="fg"><label>头像文字（无图片时显示）</label><input type="text" id="userAv" oninput="cpUser()" maxlength="2" placeholder="客"></div>
+            <div class="fg">
+              <label>上传头像图片</label>
+              <input type="file" id="userImgFile" accept="image/*" onchange="handleImgUpload('user')" style="font-size:12px;">
+            </div>
+            <div class="fg"><button class="btn btn-outline btn-sm" onclick="clearImg('user')">清除图片（用文字头像）</button></div>
+            <input type="hidden" id="userImgData">
           </div>
         </div>
         <div class="btn-group"><button class="btn btn-primary" onclick="saveChars()">💾 保存角色</button><button class="btn btn-outline" onclick="resetChars()">恢复默认</button></div>
@@ -204,7 +216,7 @@ const DEF_EXP = {
   ]
 };
 const DEF_DS = { enabled: false, apiKey: '', model: 'deepseek-chat', systemPrompt: '你是雅千酒店AI管家，热情专业，请用中文回复。' };
-const DEF_CHARS = { botName: 'Alice', botAv: 'A', userName: '客人', userAv: '客' };
+const DEF_CHARS = { botName: 'Alice', botAv: 'A', botImg: '', userName: '客人', userAv: '客', userImg: '' };
 
 function g(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } }
 function s(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
@@ -228,28 +240,60 @@ function lc() {
   const cfg = g(KEYS.chars) || DEF_CHARS;
   document.getElementById('botName').value = cfg.botName;
   document.getElementById('botAv').value = cfg.botAv;
+  document.getElementById('botImgData').value = cfg.botImg || '';
   document.getElementById('userName').value = cfg.userName;
   document.getElementById('userAv').value = cfg.userAv;
+  document.getElementById('userImgData').value = cfg.userImg || '';
   cpBot(); cpUser();
+}
+function handleImgUpload(who) {
+  const file = document.getElementById(who+'ImgFile').files[0];
+  if (!file) return;
+  if (file.size > 200 * 1024) return toast('图片不能超过200KB', 'error');
+  const r = new FileReader();
+  r.onload = function() {
+    document.getElementById(who+'ImgData').value = r.result;
+    if (who === 'bot') cpBot(); else cpUser();
+  };
+  r.readAsDataURL(file);
+}
+function clearImg(who) {
+  document.getElementById(who+'ImgData').value = '';
+  document.getElementById(who+'ImgFile').value = '';
+  if (who === 'bot') cpBot(); else cpUser();
+}
+function renderAvPreview(elId, imgData, txt) {
+  const el = document.getElementById(elId);
+  if (imgData) {
+    el.style.backgroundImage = 'url('+imgData+')';
+    el.textContent = '';
+  } else {
+    el.style.backgroundImage = '';
+    el.textContent = txt;
+  }
 }
 function cpBot() {
   const n = document.getElementById('botName').value.trim() || 'Alice';
   const a = document.getElementById('botAv').value.trim() || 'A';
-  document.getElementById('bavPrev').textContent = a;
+  const img = document.getElementById('botImgData').value;
   document.getElementById('bnamePrev').textContent = n;
+  renderAvPreview('bavPrev', img, a);
 }
 function cpUser() {
   const n = document.getElementById('userName').value.trim() || '客人';
   const a = document.getElementById('userAv').value.trim() || '客';
-  document.getElementById('uavPrev').textContent = a;
+  const img = document.getElementById('userImgData').value;
   document.getElementById('unamePrev').textContent = n;
+  renderAvPreview('uavPrev', img, a);
 }
 function saveChars() {
   const cfg = {
     botName: document.getElementById('botName').value.trim() || 'Alice',
     botAv: document.getElementById('botAv').value.trim() || 'A',
+    botImg: document.getElementById('botImgData').value,
     userName: document.getElementById('userName').value.trim() || '客人',
-    userAv: document.getElementById('userAv').value.trim() || '客'
+    userAv: document.getElementById('userAv').value.trim() || '客',
+    userImg: document.getElementById('userImgData').value
   };
   s(KEYS.chars, cfg);
   toast('角色已保存！前台即时刷新。', 'success');

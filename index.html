@@ -228,7 +228,14 @@ function eh(v) { const d = document.createElement('div'); d.textContent = v||'';
 let sessions = getSessions();
 let currentSession = null;  // always start fresh on page load; session auto-saves on each message
 
-function getChars() { return g(SK.chars) || { botName: 'Alice', botAv: 'A', userName: '客人', userAv: '客' }; }
+function getChars() { return g(SK.chars) || { botName: 'Alice', botAv: 'A', botImg: '', userName: '客人', userAv: '客', userImg: '' }; }
+function renderAv(who) {
+  const ch = getChars();
+  const img = who === 'bot' ? ch.botImg : ch.userImg;
+  const txt = who === 'bot' ? ch.botAv : ch.userAv;
+  if (img) return `<div class="av" style="background-image:url(${eh(img)});background-size:cover;background-position:center;"></div>`;
+  return `<div class="av">${eh(txt)}</div>`;
+}
 
 // ═══════ KNOWLEDGE ═══════
 const KB = {
@@ -269,12 +276,12 @@ function rc() {
   const msgs = getCurrentMessages();
   const c = document.getElementById('chatMsgs');
   if (msgs.length === 0) {
-    c.innerHTML = '<div class="msg bot"><div class="av">'+eh(ch.botAv)+'</div><div><div class="bub">您好！我是雅千AI管家 <b>'+eh(ch.botName)+'</b> 👋<br><br>🛏 客房 · 💆 SPA · 🏊 泳池<br>🍳 早餐 · 🗺️ 周边 · 🚗 接送<br><br>请问有什么可以帮您？</div></div></div>';
+    c.innerHTML = '<div class="msg bot">'+renderAv('bot')+'<div><div class="bub">您好！我是雅千AI管家 <b>'+eh(ch.botName)+'</b> 👋<br><br>🛏 客房 · 💆 SPA · 🏊 泳池<br>🍳 早餐 · 🗺️ 周边 · 🚗 接送<br><br>请问有什么可以帮您？</div></div></div>';
     return;
   }
   c.innerHTML = msgs.map(m => {
     const u = m.role === 'user';
-    return `<div class="msg ${u?'user':'bot'}"><div class="av">${u?eh(ch.userAv):eh(ch.botAv)}</div><div><div class="bub">${m.content}</div><div class="t">${m.time||''}</div></div></div>`;
+    return `<div class="msg ${u?'user':'bot'}">${renderAv(u?'user':'bot')}<div><div class="bub">${m.content}</div><div class="t">${m.time||''}</div></div></div>`;
   }).join('');
   c.scrollTop = c.scrollHeight;
 }
