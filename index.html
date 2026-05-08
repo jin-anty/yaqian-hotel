@@ -54,6 +54,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); over
 .msg .bub { padding: 10px 12px; border-radius: 14px; font-size: 13px; line-height: 1.6; word-break: break-word; }
 .msg.user .bub { background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
 .msg.bot .bub { background: #f9f8f5; color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+.typing-dots { display: flex; align-items: center; gap: 3px; padding: 12px 14px !important; }
+.typing-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); animation: td 1.2s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes td { 0%, 60%, 100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-5px); opacity: 1; } }
 .msg .t { font-size: 10px; color: var(--text3); margin-top: 2px; padding: 0 2px; }
 .quick-bar { padding: 8px 12px; display: flex; gap: 6px; overflow-x: auto; border-top: 1px solid var(--border); }
 .quick-bar::-webkit-scrollbar { height: 0; }
@@ -216,7 +221,7 @@ function sp(name) {
 }
 
 // ═══════ STORAGE ═══════
-const SK = { user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_v4', chars: 'yaqian_chars' };
+const SK = { user: 'yaqian_cur_user', userdb: 'yaqian_user_db', ds: 'yaqian_deepseek_cfg', exp: 'yaqian_exp_v4', chars: 'yaqian_chars', resp: 'yaqian_resp_cfg' };
 const SESS_PREFIX = 'yaqian_sessions_';
 function sessionsKey() { const u = g(SK.user); return SESS_PREFIX + (u ? u.phone : 'guest'); }
 function getSessions() { return g(sessionsKey()) || []; }
@@ -228,7 +233,11 @@ function eh(v) { const d = document.createElement('div'); d.textContent = v||'';
 let sessions = getSessions();
 let currentSession = null;  // always start fresh on page load; session auto-saves on each message
 
-function getChars() { return g(SK.chars) || { botName: 'Alice', botAv: 'A', botImg: '', userName: '客人', userAv: '客', userImg: '' }; }
+function getRespDelay() {
+  const cfg = g(SK.resp);
+  if (cfg && cfg.enabled) return cfg.delay || 2;
+  return 0;
+}
 function renderAv(who) {
   const ch = getChars();
   const img = who === 'bot' ? ch.botImg : ch.userImg;
@@ -308,7 +317,10 @@ async function sm() {
     if (ag && ag.triggers) {
       for (const tr of ag.triggers) {
         if (tr.userMsg && tr.reply && text.includes(tr.userMsg)) {
-          await slp(500+Math.random()*500); am('bot', tr.reply); btn.disabled = false; return;
+          await showTyping();
+          await slp(getRespDelay() * 1000);
+          hideTyping();
+          am('bot', tr.reply); btn.disabled = false; return;
         }
       }
     }
@@ -317,14 +329,16 @@ async function sm() {
   // 2. DeepSeek (fallback)
   const dc = g(SK.ds);
   if (dc && dc.enabled && dc.apiKey) {
-    await slp(300); st(); 
-    try { const r = await callDS(text, dc); ht(); if (r) { am('bot', r); btn.disabled = false; return; } }
+    showTyping();
+    const minDelay = getRespDelay() * 1000;
+    const start = Date.now();
+    try { const r = await callDS(text, dc); const elapsed = Date.now() - start; if (elapsed < minDelay) await slp(minDelay - elapsed); hideTyping(); if (r) { am('bot', r); btn.disabled = false; return; } }
     catch(e) { console.log('DS:', e.message); }
-    ht();
+    hideTyping();
   }
 
   // 3. Knowledge base
-  await slp(300+Math.random()*500);
+  showTyping(); await slp(getRespDelay() * 1000); hideTyping();
   const kbr = findKB(text);
   if (kbr) { am('bot', kbr); btn.disabled = false; return; }
   // Final fallback
@@ -354,6 +368,20 @@ async function callDS(msg, cfg) {
 function st() { const el = document.createElement('div'); el.className = 'typing'; el.id = 'te'; el.innerHTML = '<div class="d"></div><div class="d"></div><div class="d"></div>'; document.getElementById('chatMsgs').appendChild(el); }
 function ht() { const e = document.getElementById('te'); if (e) e.remove(); }
 function slp(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ═══════ TYPING INDICATOR ═══════
+function showTyping() {
+  const c = document.getElementById('chatMsgs');
+  const ch = getChars();
+  const av = ch.botImg ? `<div class="av" style="background-image:url(${eh(ch.botImg)});background-size:cover;background-position:center;"></div>` : `<div class="av">${eh(ch.botAv)}</div>`;
+  const ti = document.createElement('div'); ti.id = 'typing-indicator'; ti.className = 'msg bot';
+  ti.innerHTML = av + '<div><div class="bub typing-dots"><span></span><span></span><span></span></div></div>';
+  c.appendChild(ti); c.scrollTop = c.scrollHeight;
+}
+function hideTyping() {
+  const ti = document.getElementById('typing-indicator');
+  if (ti) ti.remove();
+}
 
 // ═══════ AUTH ═══════
 let cu = g(SK.user);
